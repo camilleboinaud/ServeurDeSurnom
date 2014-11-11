@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 
 public class ClientTCP {
@@ -22,6 +23,9 @@ public class ClientTCP {
 	public ClientTCP(String ipServer, int numPort){
 		this.ipServer = ipServer;
 		this.numPort = numPort;
+	}
+	
+	public void connect(){
 		try{
 			mySocket = new Socket(ipServer, numPort);
 			os = new DataOutputStream(mySocket.getOutputStream());
@@ -32,39 +36,40 @@ public class ClientTCP {
 			System.err.println("Impossible to reach I/O from host : "+ipServer);
 			System.err.println(e.getMessage());
 		}
-		this.exchange();
 	}
 		
-	private void exchange(){
+	public void send(String service){
 		if(mySocket!=null && os!=null && is!=null){
 			try{
-				os.writeBytes("REQ<#>AJOUTER_NOM<#>Nom<#>21208556<#>ETUD4<#>SI<#end>\n");
-							
-				bf = new BufferedReader(new InputStreamReader(is));
-				String readServer;
-				while((readServer = bf.readLine())!=null){
-					System.out.println("Server Response : "+readServer);
-					if(readServer.indexOf("<#end>")!=-1) break;
-				}
-				
+				os.writeBytes(service);
 			}catch(IOException e){
 				System.err.println("Impossible to reach I/O from host : "+ipServer);
 				System.err.println(e.getMessage());
 			}
-			this.closeConnection();
+		}
+	}
+	
+	public String receive(){
+		String readServer = "";
+
+		if(mySocket!=null && os!=null && is!=null){
+			try{
+				bf = new BufferedReader(new InputStreamReader(is));
+				while((readServer = bf.readLine())!=null){
+					if(readServer.indexOf("<#end>")!=-1) break;
+				}				
+			}catch(IOException e){
+				System.err.println("Impossible to reach I/O from host : "+ipServer);
+				System.err.println(e.getMessage());
+			}
 		}
 		
-	}
-	
-	private void sendRequest(){
+		return readServer;
 		
 	}
 	
-	private void receiveRequest(){
-		
-	}
 	
-	private void closeConnection(){
+	public void disconnect(){
 		try {
 			os.close();
 			is.close();
