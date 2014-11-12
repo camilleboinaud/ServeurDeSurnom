@@ -4,7 +4,7 @@ import java.io.IOException;
 
 
 public class ServeurCom {
-	public static String MARQUEUR_DE_FIN = "<#end>";
+	public static String MARQUEUR_DE_FIN = "<end>";
 	Serveur s = null;
 	public ServeurCom(int port){
 		s = new Serveur(port);
@@ -12,11 +12,10 @@ public class ServeurCom {
 	public void execute(){
 		String lecture = s.getMessageFromClient();
 		//lecture+=s.getMessageFromClient();
-		if((lecture.length()>= MARQUEUR_DE_FIN.length()) && (lecture.substring(lecture.length()-MARQUEUR_DE_FIN.length())==MARQUEUR_DE_FIN)){
-			s.send("ERR-ERREUR_FIN_REQUETE<#><#>\n");
+		if((lecture.indexOf(MARQUEUR_DE_FIN)!= (lecture.length()-MARQUEUR_DE_FIN.length()))){
+			s.send("ERR-ERREUR_FIN_REQUETE<#end>\n");
 		}else{
 			this.decrypt(lecture);
-			s.send("SUC");
 		}
 		
 	}

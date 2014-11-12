@@ -40,7 +40,7 @@ public class Serveur {
 		String encours="";
 		try {
 			if((encours = this.buffer.readLine()) != null){
-				lecture+="\n"+encours;
+				lecture+="\nSUC-"+encours.substring(encours.indexOf("<#>")+3);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ClientMenu {
+public class ConstructionRequete {
 	
 	public static final String SEP = "<#>";
 	public static final String END = "<#end>";
@@ -18,7 +18,7 @@ public class ClientMenu {
 	public String requete = "";
 
 	
-	public ClientMenu(){
+	public ConstructionRequete(){
 		sc = new Scanner(System.in);
 		scInt = new Scanner(System.in);
 
