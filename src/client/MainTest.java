@@ -16,6 +16,7 @@ public class MainTest {
 				e.printStackTrace();
 			}
 			requete = new ConstructionRequete();
+			System.out.println("rq: "+requete.toString());
 			client.send(requete.toString());
 			reponse = new TraitementReponse(client.receive());
 		} while(!reponse.affichage());
