@@ -8,7 +8,7 @@ public class MainTest {
 		
 		System.out.println("debug 1");
 		
-		ClientTCP client = new ClientTCP("10.212.127.153", 6565);
+		ClientTCP client = new ClientTCP("localhost", 6565);
 		client.connect();
 			
 		do{
