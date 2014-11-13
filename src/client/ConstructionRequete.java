@@ -1,6 +1,5 @@
 package client;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,7 +23,6 @@ public class ConstructionRequete {
 
 		service = menuService();
 		params = menuParametre();
-		System.out.println("test - params : "+params.toString());
 	}
 	
 	

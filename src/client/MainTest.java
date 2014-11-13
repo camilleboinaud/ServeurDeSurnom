@@ -6,9 +6,7 @@ public class MainTest {
 		TraitementReponse reponse = null;
 		ConstructionRequete requete = null;
 		
-		System.out.println("debug 1");
-		
-		ClientTCP client = new ClientTCP("localhost", 6565);
+		ClientTCP client = new ClientTCP("192.168.0.12", 6565);
 		client.connect();
 			
 		do{

@@ -50,28 +50,40 @@ public class TraitementReponse {
 			} else if(result){
 				switch(typeRep[1]){
 				case "AJOUTER_NOM" :
+					afficherAjouterNom(tab);
 					break;
 				case "AJOUTER_SURNOM" :
+					afficherAjouterSurnom(tab);
 					break;
 				case "LISTER_REQUETE" :
+					afficherListerRequete(tab);
 					break;
 				case "LISTER_UN":
+					afficherPersonne(tab);
+					break;
+				case "LISTER_TOUT":
+					afficherPersonne(tab);
 					break;
 				case "MODIFIER_APOGEE":
+					afficherPersonne(tab);
 					break;
 				case "MODIFIER_DEPARTEMENT":
+					afficherPersonne(tab);
 					break;
 				case "MODIFIER_NOM":
+					afficherPersonne(tab);
 					break;
 				case "MODIFIER_QUALITE":
+					afficherPersonne(tab);
 					break;
 				case "MODIFIER_SURNOM":
+					afficherPersonne(tab);
 					break;
 				case "SUPPRIMER_NOM":
+					afficherSupprimerNom(tab);
 					break;
 				case "SUPPRIMER_SURNOM":
-					break;
-				default : 
+					afficherSupprimerSurnom(tab);
 					break;
 				}
 			} 
@@ -79,5 +91,87 @@ public class TraitementReponse {
 		System.out.println();
 		return result;
 	}
+	
+	private void afficherAjouterNom(String[] arg){
+		System.out.println("Le nom à bien été ajouté : ");
+		listerUnElement(arg[1]);
+	}
+	
+	private void afficherAjouterSurnom(String[] arg){
+		System.out.println("Le surnom à bien été ajouté : ");
+		listerUnElement(arg[1]);
+	}
+	
+	private void afficherListerRequete(String[] arg){
+		System.out.println("Données concernant les personnes filtrées : ");
+		listerPlusieursElements(arg[1]);
+	}
+	
+	private void afficherPersonne(String[] arg){
+		System.out.println("Données concernant toutes les personnes : ");
+		listerPlusieursElements(arg[1]);
+	}
+	
+	
+	private void afficherSupprimerNom(String[] arg){
+		System.out.println("Les données suivantes ont bien été supprimées :");
+		listerUnElement(arg[1]);
+	}
+	
+	private void afficherSupprimerSurnom(String[] arg){
+		System.out.println("Le surnom à bien été supprimé. Voici les données conservées : ");
+		listerUnElement(arg[1]);
+	}
+	
+	private void listerPlusieursElements(String elements){
+		String[] element = elements.split(";");
+		
+		for(int i = 0 ; i < element.length ; i++){
+			listerUnElement(element[i]);
+		}
+	}
+	
+	private void listerUnElement(String elements){
+		String[] element = elements.split(";");
+		String[] enDeux = element[0].split(":");
+		String[] infos = enDeux[0].split("/");
+		String[] surnoms;
+		try{
+			surnoms = enDeux[1].split(",");
+		}catch(ArrayIndexOutOfBoundsException e){
+			surnoms = null;
+		}
+		System.out.println("\n\t--> ["+infos[1]+"] "+infos[0]+" ("+affichageGenre(infos[2])+" - "+affichageQualite(infos[3])+" - "+affichageDepartement(infos[4])+") :");
+		if(surnoms!=null){
+			for(int i = 0; i < surnoms.length ; i++){
+				System.out.println("\t\t- "+surnoms[i]);
+			}
+		}
+	}
+	
+	private String affichageGenre(String arg){
+		if(arg.equals("M")) return "Homme";
+		return "Femme";
+	}
+	
+	private String affichageQualite(String arg){
+		if(arg.indexOf("ETUD")!=-1){
+			if(arg.substring(4)=="1")
+				return "Etudiant 1ère Année";
+			else
+				return "Etudiant "+arg.substring(4)+"ème Année";
+		}
+		return "Professeur";	
+	}
+	
+	private String affichageDepartement(String arg){
+		String result = "";
+		if(arg.equals("PEIP"))
+			result = "PEIP";
+		else
+			result = "Département "+arg;
+		return result;
+	}
+	
 
 }
