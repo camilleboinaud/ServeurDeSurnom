@@ -5,10 +5,10 @@ import java.io.IOException;
 import client.ServiceN;
 
 public class ServeurCom {
-	public static String	MARQUEUR_DE_FIN	= "<end>";
+	public static String	MARQUEUR_DE_FIN	= "<#end>";
 	Serveur					s				= null;
 	ServiceN				serviceDemande	= null;
-	ReponseEnum			reponseToSend		= null;
+	ReponseEnum				reponseToSend	= null;
 
 	public ServeurCom(int port) {
 		s = new Serveur(port);
@@ -34,83 +34,129 @@ public class ServeurCom {
 
 	}
 
-	private void traitementRequete(String msg) {
+	private ReponseEnum traitementRequete(String msg) {
+		System.out.println("msg " + msg);
 		String params[] = msg.split("<#>");
-		if(params[0] == "REQ"){
-			//Nous sommes dans une requete
-			switch(params[1]){
-			case "AJOUTER_NOM" :
-				ajouterNom(params[2], Integer.parseInt(params[3]), params[4].charAt(0), params[5], Integer.parseInt(params[6]), params[7]);
+		System.out.println("params0" + params[0]);
+		System.out.println("params1" + params[1]);
+		if (params[0] == "REQ") {
+			// Nous sommes dans une requete
+			switch (params[1]) {
+			case "AJOUTER_NOM":
+				reponseToSend = ajouterNom(params[2],
+						Integer.parseInt(params[3]), params[4].charAt(0),
+						params[5], Integer.parseInt(params[6]), params[7]);
 				break;
-			case "AJOUTER_SURNOM" :
-				ajouterSurnom(params[2], Integer.parseInt(params[3]), params[4]);
+			case "AJOUTER_SURNOM":
+				reponseToSend = ajouterSurnom(params[2],
+						Integer.parseInt(params[3]), params[4]);
 				break;
-			case "LISTER_REQUETE" :
-				listerRequete(params[2]);
+			case "LISTER_REQUETE":
+				reponseToSend = listerRequete(params[2]);
 				break;
-			case "LISTER_TOUT" :
-				listerTout();
+			case "LISTER_TOUT":
+				reponseToSend = listerTout();
 				break;
 			case "LISTER_UN":
-				listerUn(params[2], Integer.parseInt(params[3]));
+				reponseToSend = listerUn(params[2], Integer.parseInt(params[3]));
 				break;
 			case "MODIFIER_APOGEE":
-				modifierApogee(params[2],Integer.parseInt(params[3]),Integer.parseInt(params[4]));
+				reponseToSend = modifierApogee(params[2],
+						Integer.parseInt(params[3]),
+						Integer.parseInt(params[4]));
 				break;
 			case "MODIFIER_DEPARTEMENT":
-				modifierApogee(params[2],Integer.parseInt(params[3]),String departement);
+				reponseToSend = modifierDepartement(params[2],
+						Integer.parseInt(params[3]), params[4]);
 				break;
 			case "MODIFIER_NOM":
+				reponseToSend = modifierNom(params[2],
+						Integer.parseInt(params[3]), params[4]);
 				break;
 			case "MODIFIER_QUALITE":
+				reponseToSend = modifierQualite(params[2],
+						Integer.parseInt(params[3]), params[4],
+						Integer.parseInt(params[5]));
 				break;
 			case "MODIFIER_SURNOM":
+				reponseToSend = modifierSurnom(params[2],
+						Integer.parseInt(params[3]), params[4]);
 				break;
 			case "SUPPRIMER_NOM":
+				reponseToSend = supprimerNom(params[2],
+						Integer.parseInt(params[3]));
 				break;
 			case "SUPPRIMER_SURNOM":
+				reponseToSend = supprimerSurnom(params[2],
+						Integer.parseInt(params[3]), params[4]);
 				break;
-			default : 
-				break;
+			default:
+				return ReponseEnum.SERVICE_INCONNU;
 			}
-			
-			}
-		// TODO en cours traitement requete
 		}
-		
-	
-	private void listerUn(String nom, int numeroApoge) {
-		
-	
+		return reponseToSend;
 	}
-	private void ajouterNom(String nom, int numeroApoge, char genre, String statut, int annee, String departement) {
-		
-		
+
+	private ReponseEnum listerUn(String nom, int numeroApoge) {
+		return ReponseEnum.SUC;
 	}
-	private void ajouterSurnom(String nom, int numeroApoge, String surnom) {
-		
-		
+
+	private ReponseEnum ajouterNom(String nom, int numeroApoge, char genre,
+			String statut, int annee, String departement) {
+		return ReponseEnum.SUC;
 	}
-	private void listerRequete(String filtre) {
-		
-		
+
+	private ReponseEnum ajouterSurnom(String nom, int numeroApoge, String surnom) {
+		return ReponseEnum.SUC;
 	}
-	private void listerTout() {
-		
-		
+
+	private ReponseEnum listerRequete(String filtre) {
+		return ReponseEnum.SUC;
 	}
-	private void modifierApogee(String nom, int apogee, int nouveauApogee){
-		
+
+	private ReponseEnum listerTout() {
+		System.out.println("lister tout");
+		this.s.send("lister tout okay");
+		this.s.send("SUC-LISTER_TOUT<#><#end>");
+		return ReponseEnum.SUC;
 	}
-	private void modifierApogee(String nom,int apogee,String departement){
-		
+
+	private ReponseEnum modifierApogee(String nom, int apogee, int nouveauApogee) {
+		return ReponseEnum.SUC;
 	}
+
+	private ReponseEnum modifierDepartement(String nom, int apogee,
+			String departement) {
+		return ReponseEnum.SUC;
+	}
+
+	private ReponseEnum modifierNom(String nom, int apogee, String newNom) {
+		return ReponseEnum.SUC;
+	}
+
+	private ReponseEnum modifierQualite(String nom, int apogee, String statut,
+			int annee) {
+		return ReponseEnum.SUC;
+	}
+
+	private ReponseEnum modifierSurnom(String nom, int apogee, String surnom) {
+		return ReponseEnum.SUC;
+	}
+
+	private ReponseEnum supprimerNom(String nom, int apogee) {
+		return ReponseEnum.SUC;
+	}
+
+	private ReponseEnum supprimerSurnom(String nom, int apogee, String surnom) {
+		return ReponseEnum.SUC;
+	}
+
 	public void disconnect() throws IOException {
 		s.disconnect();
 	}
 
 	public static void main(String args[]) {
-		ServeurCom sc = new ServeurCom(6565);
+		ServeurCom sc = new ServeurCom(6464);
 		try {
 			sc.execute();
 			sc.disconnect();
