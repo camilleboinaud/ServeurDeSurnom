@@ -31,37 +31,37 @@ public class ConstructionRequete {
 
 		switch(service){
 		case AJOUTER_NOM :
-			result = ask(true,false, true, false, true, true, true,false,false);
+			result = ask(true,false, true, false, true, true, true,false,false,false);
 			break;
 		case AJOUTER_SURNOM :
-			result = ask(true,false, true, false, false, false, false,true,false);
+			result = ask(true,false, true, false, false, false, false,true,false,false);
 			break;
 		case LISTER_REQUETE :
-			result = ask(false,false, false, false, false, false, false,false,true);
+			result = ask(false,false, false, false, false, false, false,false,false,true);
 			break;
 		case LISTER_UN:
-			result = ask(true,false, true, false, false, false, false,false,false);
+			result = ask(true,false, true, false, false, false, false,false,false,false);
 			break;
 		case MODIFIER_APOGEE:
-			result = ask(true,false, true, true, false, false, false,false,false);
+			result = ask(true,false, true, true, false, false, false,false,false,false);
 			break;
 		case MODIFIER_DEPARTEMENT:
-			result = ask(true,false, true, false, false, false, true,false,false);
+			result = ask(true,false, true, false, false, false, true,false,false,false);
 			break;
 		case MODIFIER_NOM:
-			result = ask(true,true, true, false, false, false, false,false,false);
+			result = ask(true,true, true, false, false, false, false,false,false,false);
 			break;
 		case MODIFIER_QUALITE:
-			result = ask(true,false, true, false, false, true, false,false,false);
+			result = ask(true,false, true, false, false, true, false,false,false,false);
 			break;
 		case MODIFIER_SURNOM:
-			result = ask(true,false, true, false, false, false, false,true,false);
+			result = ask(true,false, true, false, false, false, false,true,true,false);
 			break;
 		case SUPPRIMER_NOM:
-			result = ask(true,false, true, false, false, false, false,false,false);
+			result = ask(true,false, true, false, false, false, false,false,false,false);
 			break;
 		case SUPPRIMER_SURNOM:
-			result = ask(true,false, true, false, false, false, false,true,false);
+			result = ask(true,false, true, false, false, false, false,true,false,false);
 			break;
 		default : 
 			break;
@@ -78,7 +78,7 @@ public class ConstructionRequete {
 			boolean genre, 
 			boolean qualite, 
 			boolean departement,  
-			boolean surnom,
+			boolean surnom, boolean newSurnom,
 			boolean filtre){
 		
 		ArrayList<String> result = new ArrayList<String>();
@@ -88,7 +88,7 @@ public class ConstructionRequete {
 		}
 		
 		if(apogee){
-			result.add(askApogee());
+			result.add(askApogee("N"));
 		}
 		
 		if(genre){
@@ -107,12 +107,16 @@ public class ConstructionRequete {
 			result.add(askNom("SURNOM"));
 		}
 		
+		if(newSurnom){
+			result.add(askNom("NEWSURNOM"));
+		}
+		
 		if(newNom){
-			result.add(askNom("NOM"));
+			result.add(askNom("NEWNOM"));
 		}
 		
 		if(newApogee){
-			result.add(askApogee());
+			result.add(askApogee("NEW"));
 		}
 				
 		if(filtre){
@@ -126,18 +130,22 @@ public class ConstructionRequete {
 		String answer = "";
 		do{
 			if(type.equals("NOM")) System.out.println("Saisissez le nom de la personne : ");
+			else if(type.equals("NEWNOM")) System.out.println("Saisissez le nouveau nom de la personne : ");
 			else if(type.equals("SURNOM")) System.out.println("Saisissez un surnom de la personne : ");
+			else if(type.equals("NEWSURNOM")) System.out.println("Saisissez le nouveau surnom de la personne : ");
 			else System.out.println("Saisissez un filtre de recherche : ");
 			answer = sc.nextLine();
 		} while(answer.equals(""));
 		return answer;
 	}
 	
-	private String askApogee(){
+	private String askApogee(String s){
 		String answer = "";
 		
 		do{
-			System.out.println("Saisissez le numéro Apogée de la personne : ");
+			if(s.equals("N")) System.out.println("Saisissez le numéro Apogée de la personne : ");
+			else System.out.println("Saisissez le nouveau numéro Apogée de la personne : ");
+
 			answer = sc.nextLine();
 		} while(answer.length() != 8);
 	

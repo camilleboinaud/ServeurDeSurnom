@@ -1,5 +1,7 @@
 package client;
 public enum ServiceN {
+	REQ("REQ"),
+	
 	AJOUTER_NOM("AJOUTER_NOM"),
 	AJOUTER_SURNOM("AJOUTER_SURNOM"),
 	SUPPRIMER_SURNOM("SUPPRIMER_SURNOM"),

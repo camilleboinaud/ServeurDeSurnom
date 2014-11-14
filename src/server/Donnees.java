@@ -11,6 +11,19 @@ public class Donnees {
 	
 	public Donnees(ServeurCom server){
 		donnees = new HashMap<String,Personne>();
+		Personne p1 = new Personne("Monsieur X", 21200000, "M", "PROF", "SI");
+		donnees.put(p1.getNom()+p1.getApogee(), p1);
+		Personne p2 = new Personne("Madame Y", 20200000, "F", "PROF", "BAT");
+		donnees.put(p2.getNom()+p2.getApogee(), p2);
+		Personne p3 = new Personne("Paul", 21201111, "M", "ETUD3", "MAM");
+		ArrayList<String> s3 = p3.getSurnoms();
+		s3.add("Paupol");
+		p3.setSurnoms(s3);
+		donnees.put(p3.getNom()+p3.getApogee(), p3);
+		Personne p4 = new Personne("Paulette", 21202222, "F", "ETUD5", "GE");
+		donnees.put(p4.getNom()+p4.getApogee(), p4);
+		Personne p5 = new Personne("Jean", 21203333, "M", "ETUD1", "PEIP");
+		donnees.put(p5.getNom()+p5.getApogee(), p5);
 		this.server = server;
 	}
 	
@@ -38,6 +51,8 @@ public class Donnees {
 		s.add(surnom);
 		p.setSurnoms(s);
 		
+		System.out.println(p.getSurnoms());
+		
 		donnees.remove(key);
 		donnees.put(key, p);
 		
@@ -53,7 +68,7 @@ public class Donnees {
 		Iterator<String> it = donnees.keySet().iterator();
 		while(it.hasNext()){
 			test = donnees.get(it.next()).toString();
-			if(test.indexOf(filtre)!=-1) data.concat(test);
+			if(test.indexOf(filtre)!=-1) data+=test;
 		}	
 		
 		if(data.equals("")) return ReponseEnum.FILTRE_INCONNU;
@@ -76,11 +91,11 @@ public class Donnees {
 		String data = "";
 		Iterator<String> it = donnees.keySet().iterator();
 		
-		while(it.hasNext()){
-			data.concat(donnees.get(it.next()).toString());
-		}
-		
+		do{
+			data = data +donnees.get(it.next()).toString();
+		}while(it.hasNext());
 		server.setRetours(data);
+		System.out.println(data);
 		
 		return ReponseEnum.SUC;
 	}
@@ -132,6 +147,7 @@ public class Donnees {
 		key = nom+newApogee;
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
 		return ReponseEnum.SUC;
 	}
@@ -168,7 +184,7 @@ public class Donnees {
 		return ReponseEnum.SUC;
 	}
 	
-	public ReponseEnum supprimerPersonne(String nom, String apogee){
+	public ReponseEnum supprimerPersonne(String nom, int apogee){
 		String key = nom+apogee;
 		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
 		Personne p = donnees.get(key);
@@ -178,7 +194,7 @@ public class Donnees {
 		return ReponseEnum.SUC;
 	}
 	
-	public ReponseEnum supprimerSurnom(String nom, String apogee, String surnom){
+	public ReponseEnum supprimerSurnom(String nom, int apogee,String surnom){
 		String key = nom+apogee;
 		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
 

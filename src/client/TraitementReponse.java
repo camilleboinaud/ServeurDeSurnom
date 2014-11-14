@@ -90,7 +90,6 @@ public class TraitementReponse {
 				}
 			} 
 		}
-		System.out.println();
 		return result;
 	}
 	
@@ -111,7 +110,8 @@ public class TraitementReponse {
 	
 	private void afficherPersonne(String[] arg){
 		System.out.println("Données concernant toutes les personnes : ");
-		listerPlusieursElements(arg[1]);
+		if(arg.length>1) listerPlusieursElements(arg[1]);
+		else System.out.println("\t--> AUCUNE DONNEE");
 	}
 	
 	
@@ -126,7 +126,7 @@ public class TraitementReponse {
 	}
 	
 	private void listerPlusieursElements(String elements){
-		String[] element = elements.split(";");
+		String[] element = elements.split("<;>");
 		
 		for(int i = 0 ; i < element.length ; i++){
 			listerUnElement(element[i]);
@@ -134,12 +134,12 @@ public class TraitementReponse {
 	}
 	
 	private void listerUnElement(String elements){
-		String[] element = elements.split(";");
-		String[] enDeux = element[0].split(":");
-		String[] infos = enDeux[0].split("/");
+		String[] element = elements.split("<;>");
+		String[] enDeux = element[0].split("<:>");
+		String[] infos = enDeux[0].split("</>");
 		String[] surnoms;
 		try{
-			surnoms = enDeux[1].split(",");
+			surnoms = enDeux[1].split("<,>");
 		}catch(ArrayIndexOutOfBoundsException e){
 			surnoms = null;
 		}

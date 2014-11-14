@@ -53,7 +53,12 @@ public class Serveur {
 	 * @param tosend
 	 */
 	public void send(String tosend){
-		this.printer.println(tosend);
+		try {
+			System.out.println(tosend);
+			this.output.writeBytes(tosend);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Fermer tous les streams et ports

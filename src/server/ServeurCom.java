@@ -1,8 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import client.ServiceN;
 
@@ -32,9 +30,6 @@ public class ServeurCom {
 	}
 
 	private void decrypt(String msg) {
-		/*
-		 * System.out.println("reçu : " + msg); s.send(msg);
-		 */
 		ReponseEnum reponse = this.traitementRequete(msg);
 		this.sendReponse(serviceDemande, reponse, retours);
 
@@ -42,21 +37,15 @@ public class ServeurCom {
 
 	private ReponseEnum traitementRequete(String msg) {
 		ReponseEnum reponseToSend = null;
-		this.s.send("coucou<#end>");
-
-		System.out.println("msg " + msg);
 		String params[] = msg.split("<#>|<#end>");
-		System.out.println("params0" + params[0]);
-		System.out.println("params1" + params[1]);
-		serviceDemande = ServiceN.valueOf(params[0]);
-
-		if (params[0] == "REQ") {
-			// Nous sommes dans une requete
-			switch (this.serviceDemande) {
+		serviceDemande = client.ServiceN.valueOf(params[1]);
+		
+		if (params[0].equals("REQ")) {
+			switch (serviceDemande) {
 			case AJOUTER_NOM:
 				reponseToSend = donnees.ajouterPersonne(new Personne(params[2],
-						Integer.parseInt(params[3]), params[4].charAt(0),
-						params[5], Integer.parseInt(params[6]), params[7]));
+						Integer.parseInt(params[3]), params[4],
+						params[5], params[6]));
 				break;
 			case AJOUTER_SURNOM:
 				reponseToSend = donnees.ajouterSurnom(params[2],
@@ -86,15 +75,14 @@ public class ServeurCom {
 				break;
 			case MODIFIER_QUALITE:
 				reponseToSend = donnees.modifierQualite(params[2],
-						Integer.parseInt(params[3]), params[4],
-						Integer.parseInt(params[5]));
+						Integer.parseInt(params[3]), params[4]);
 				break;
 			case MODIFIER_SURNOM:
 				reponseToSend = donnees.modifierSurnom(params[2],
-						Integer.parseInt(params[3]), params[4]);
+						Integer.parseInt(params[3]), params[4], params[5]);
 				break;
 			case SUPPRIMER_NOM:
-				reponseToSend = donnees.supprimerNom(params[2],
+				reponseToSend = donnees.supprimerPersonne(params[2],
 						Integer.parseInt(params[3]));
 				break;
 			case SUPPRIMER_SURNOM:
@@ -102,7 +90,6 @@ public class ServeurCom {
 						Integer.parseInt(params[3]), params[4]);
 				break;
 			default:
-				System.out.println("default");
 				return ReponseEnum.SERVICE_INCONNU;
 			}
 		}
@@ -112,7 +99,9 @@ public class ServeurCom {
 
 	private void sendReponse(ServiceN service, ReponseEnum rep, String retours) {
 		if (rep == ReponseEnum.SUC) {
-			this.s.send("SUC-" + service.toString() + retours + "<#end>");
+			this.s.send("SUC-" + service.toString() +"<#>"+retours+ "<#end>\n");
+		} else{
+			this.s.send("ERR-"+rep+"<#end>\n");
 		}
 		// this.s.send("SUC")
 	}

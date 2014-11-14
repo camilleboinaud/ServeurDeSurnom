@@ -70,13 +70,13 @@ public class Personne {
 
 	public String toString(){
 		String result =  nom+"</>"+apogee+"</>"+genre+"</>"+qualite+"</>"+departement+"<:>";
-		if(surnoms.size()>0) result.concat(surnoms.get(0));
+		if(surnoms.size()>0) result = result+surnoms.get(0);
 		if(surnoms.size()>1){
 			for(String surnom : surnoms){
-				result.concat(","+surnom);
+				result = result+"<,>"+surnom;
 			}
 		}
-		return result.concat(";");
+		return result.concat("<;>");
 	}
 
 }
