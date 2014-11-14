@@ -6,8 +6,8 @@ public class MainTest {
 		TraitementReponse reponse = null;
 		ConstructionRequete requete = null;
 		
-		ClientTCP client = new ClientTCP("172.19.250.194", 6464);
-		//ClientTCP client = new ClientTCP("172.19.250.108", 6464);
+		//ClientTCP client = new ClientTCP("172.19.250.194", 6464);
+		ClientTCP client = new ClientTCP("172.19.250.108", 6464);
 		System.out.println("client créé");
 		client.connect();
         System.out.println("client connecté");
