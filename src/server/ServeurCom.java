@@ -10,13 +10,13 @@ public class ServeurCom {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
 	private Serveur					s				= null;
 	private ServiceN				serviceDemande	= null;
-	private List<String>			retours;
+	private String			retours;
 	private Donnees donnees;
 
 	public ServeurCom(int port) {
 		s = new Serveur(port);
-		donnees = new Donnees();
-		retours = new ArrayList<String>();
+		donnees = new Donnees(this);
+		retours = "";
 	}
 
 	public void execute() {
@@ -48,7 +48,7 @@ public class ServeurCom {
 		String params[] = msg.split("<#>|<#end>");
 		System.out.println("params0" + params[0]);
 		System.out.println("params1" + params[1]);
-		serviceDemande = getServiceDemandeFromString(params[0]);
+		serviceDemande = ServiceN.valueOf(params[0]);
 		
 		if (params[0] == "REQ") {
 			// Nous sommes dans une requete
@@ -109,38 +109,6 @@ public class ServeurCom {
 		return reponseToSend;
 	}
 
-	private ServiceN getServiceDemandeFromString(String params) {
-		switch (params) {
-		case "AJOUTER_NOM":
-			return ServiceN.AJOUTER_NOM;
-		case "AJOUTER_SURNOM":
-			return ServiceN.AJOUTER_SURNOM;
-		case "LISTER_REQUETE":
-			return ServiceN.LISTER_REQUETE;
-		case "LISTER_TOUT":
-			return ServiceN.LISTER_TOUT;
-		case "LISTER_UN":
-			return ServiceN.LISTER_UN;
-		case "MODIFIER_APOGEE":
-			return ServiceN.MODIFIER_APOGEE;
-		case "MODIFIER_DEPARTEMENT":
-			return ServiceN.MODIFIER_DEPARTEMENT;
-		case "MODIFIER_NOM":
-			return ServiceN.MODIFIER_NOM;
-		case "MODIFIER_QUALITE":
-			return ServiceN.MODIFIER_QUALITE;
-		case "MODIFIER_SURNOM":
-			return ServiceN.MODIFIER_SURNOM;
-		case "SUPPRIMER_NOM":
-			return ServiceN.SUPPRIMER_NOM;
-		case "SUPPRIMER_SURNOM":
-			return ServiceN.SUPPRIMER_SURNOM;
-		default:
-			System.out.println("default");
-		}
-		return null;
-	}
-
 	private ReponseEnum listerUn(String nom, int numeroApoge) {
 		return ReponseEnum.SUC;
 	}
@@ -195,21 +163,13 @@ public class ServeurCom {
 	private ReponseEnum supprimerSurnom(String nom, int apogee, String surnom) {
 		return ReponseEnum.SUC;
 	}
-	private void sendReponse(ServiceN service, ReponseEnum rep, List<String> retours){
+	private void sendReponse(ServiceN service, ReponseEnum rep, String retours){
 		if(rep == ReponseEnum.SUC){
-			String paramsToSend=construireParamToSend(retours);
-			this.s.send("SUC-"+service.toString()+paramsToSend+"<#end>");
+			this.s.send("SUC-"+service.toString()+retours+"<#end>");
 		}
 		//this.s.send("SUC")
 	}
-	private String construireParamToSend(List<String> params){
-		String paramsts = "";
-		for(String s:params){
-			paramsts+="<#>"+s;
-		}
-		paramsts+="<#>";
-		return paramsts;
-	}
+	
 	
 	public void disconnect() throws IOException {
 		s.disconnect();
