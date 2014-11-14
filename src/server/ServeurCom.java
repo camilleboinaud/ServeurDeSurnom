@@ -8,7 +8,6 @@ public class ServeurCom {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
 	Serveur					s				= null;
 	ServiceN				serviceDemande	= null;
-	ReponseEnum				reponseToSend	= null;
 
 	public ServeurCom(int port) {
 		s = new Serveur(port);
@@ -30,11 +29,14 @@ public class ServeurCom {
 		/*
 		 * System.out.println("reçu : " + msg); s.send(msg);
 		 */
-		this.traitementRequete(msg);
+		ReponseEnum reponse = this.traitementRequete(msg);
+		this.sendReponse(reponse);
 
 	}
 
 	private ReponseEnum traitementRequete(String msg) {
+		ReponseEnum reponseToSend = null;
+
 		System.out.println("msg " + msg);
 		String params[] = msg.split("<#>");
 		System.out.println("params0" + params[0]);
@@ -150,7 +152,9 @@ public class ServeurCom {
 	private ReponseEnum supprimerSurnom(String nom, int apogee, String surnom) {
 		return ReponseEnum.SUC;
 	}
-
+	private void sendReponse(ReponseEnum rep){
+		//this.s.send("SUC")
+	}
 	public void disconnect() throws IOException {
 		s.disconnect();
 	}
