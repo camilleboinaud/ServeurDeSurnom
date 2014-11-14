@@ -1,16 +1,20 @@
 package server;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import client.ServiceN;
 
 public class ServeurCom {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
-	Serveur					s				= null;
-	ServiceN				serviceDemande	= null;
+	private Serveur					s				= null;
+	private ServiceN				serviceDemande	= null;
+	private List<String>			retours;
 
 	public ServeurCom(int port) {
 		s = new Serveur(port);
+		retours = new ArrayList<String>();
 	}
 
 	public void execute() {
@@ -30,7 +34,7 @@ public class ServeurCom {
 		 * System.out.println("reçu : " + msg); s.send(msg);
 		 */
 		ReponseEnum reponse = this.traitementRequete(msg);
-		this.sendReponse(serviceDemande, reponse);
+		this.sendReponse(serviceDemande, reponse, retours);
 
 	}
 
@@ -141,6 +145,7 @@ public class ServeurCom {
 
 	private ReponseEnum ajouterNom(String nom, int numeroApoge, char genre,
 			String statut, int annee, String departement) {
+		
 		return ReponseEnum.SUC;
 	}
 
@@ -188,14 +193,39 @@ public class ServeurCom {
 	private ReponseEnum supprimerSurnom(String nom, int apogee, String surnom) {
 		return ReponseEnum.SUC;
 	}
-	private void sendReponse(ServiceN service, ReponseEnum rep){
+	private void sendReponse(ServiceN service, ReponseEnum rep, List<String> retours){
 		if(rep == ReponseEnum.SUC){
-			//this.send("SUC-");
+			String paramsToSend=construireParamToSend(retours);
+			this.s.send("SUC-"+service.toString()+paramsToSend+"<#end>");
 		}
 		//this.s.send("SUC")
 	}
+	private String construireParamToSend(List<String> params){
+		String paramsts = "";
+		for(String s:params){
+			paramsts+="<#>"+s;
+		}
+		paramsts+="<#>";
+		return paramsts;
+	}
+	
 	public void disconnect() throws IOException {
 		s.disconnect();
+	}
+	public ServiceN getServiceDemande() {
+		return serviceDemande;
+	}
+
+	public void setServiceDemande(ServiceN serviceDemande) {
+		this.serviceDemande = serviceDemande;
+	}
+
+	public List<String> getRetours() {
+		return retours;
+	}
+
+	public void setRetours(List<String> retours) {
+		this.retours = retours;
 	}
 
 	public static void main(String args[]) {
