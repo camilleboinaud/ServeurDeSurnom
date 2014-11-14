@@ -7,20 +7,31 @@ import java.util.Iterator;
 public class Donnees {
 	
 	private HashMap<String,Personne> donnees;
+	private ServeurCom server;
 	
 	public Donnees(ServeurCom server){
 		donnees = new HashMap<String,Personne>();
+		this.server = server;
 	}
 	
-	public String ajouterPersonne(Personne p){
+	public ReponseEnum ajouterPersonne(Personne p){
 		String key = p.getNom()+p.getApogee();
-		donnees.put(key, p);
 		
-		return p.toString();
+		if(donnees.containsKey(key)) return ReponseEnum.NOM_EXISTE_DEJA;
+		if(!p.getQualite().matches("PROF|ETUD[1-5]")) return ReponseEnum.SYNTAXE_QUALITE;
+		if(String.valueOf(p.getApogee()).length()!=8) return ReponseEnum.SYNTAXE_APOGEE;
+		if(!p.getDepartement().matches("SI|MAM|ELEC|ELECII|GE|GB|BAT|PEIP")) return ReponseEnum.DEPARTEMENT_INCONNU;
+		
+		donnees.put(key, p);
+
+		server.setRetours(p.toString());
+		
+		return ReponseEnum.SUC;
 	}
 	
-	public String ajouterSurnom(String nom, int apogee, String surnom){
+	public ReponseEnum ajouterSurnom(String nom, int apogee, String surnom){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
 		Personne p = donnees.get(key);
 		ArrayList<String> s = p.getSurnoms();
 		
@@ -30,28 +41,38 @@ public class Donnees {
 		donnees.remove(key);
 		donnees.put(key, p);
 		
-		return p.toString();
+		server.setRetours(p.toString());
+		
+		return ReponseEnum.SUC;
 	}
 	
-	public String listerRequete(String filtre){
+	public ReponseEnum listerRequete(String filtre){
 		String data = "";
-		String test = "";
+		String test;
 		
 		Iterator<String> it = donnees.keySet().iterator();
 		while(it.hasNext()){
 			test = donnees.get(it.next()).toString();
-			if(test.indexOf("filtre")!=-1) data.concat(test);
-		}		
+			if(test.indexOf(filtre)!=-1) data.concat(test);
+		}	
 		
-		return data;
+		if(data.equals("")) return ReponseEnum.FILTRE_INCONNU;
+		
+		server.setRetours(data);
+		
+		return ReponseEnum.SUC;
 	}
 	
-	public String listerUn(String nom, int apogee){
+	public ReponseEnum listerUn(String nom, int apogee){
 		String key = nom+apogee;
-		return donnees.get(key).toString();
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+		
+		server.setRetours(donnees.get(key).toString());
+
+		return ReponseEnum.SUC;
 	}
 	
-	public String listerTout(){
+	public ReponseEnum listerTout(){
 		String data = "";
 		Iterator<String> it = donnees.keySet().iterator();
 		
@@ -59,11 +80,15 @@ public class Donnees {
 			data.concat(donnees.get(it.next()).toString());
 		}
 		
-		return data;
+		server.setRetours(data);
+		
+		return ReponseEnum.SUC;
 	}
 	
-	public String modifierNom(String nom, int apogee, String newNom){
+	public ReponseEnum modifierNom(String nom, int apogee, String newNom){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
@@ -71,12 +96,16 @@ public class Donnees {
 		key = newNom+apogee;
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String modifierSurnom(String nom, int apogee, String surnom, String newSurnom){
+	public ReponseEnum modifierSurnom(String nom, int apogee, String surnom, String newSurnom){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+
+		
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
@@ -86,12 +115,16 @@ public class Donnees {
 		p.setSurnoms(surnoms);
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String modifierApogee(String nom, int apogee, int newApogee){
+	public ReponseEnum modifierApogee(String nom, int apogee, int newApogee){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+		if(String.valueOf(newApogee).length()!=8) return ReponseEnum.SYNTAXE_APOGEE;
+
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
@@ -100,53 +133,68 @@ public class Donnees {
 		
 		donnees.put(key, p);
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String modifierDepartement(String nom, int apogee, String departement){
+	public ReponseEnum modifierDepartement(String nom, int apogee, String departement){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+		if(!departement.matches("SI|MAM|ELEC|ELECII|GE|GB|BAT|PEIP")) return ReponseEnum.DEPARTEMENT_INCONNU;
+
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
 		p.setDepartement(departement);
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String modifierQualite(String nom, int apogee, String qualite){
+	public ReponseEnum modifierQualite(String nom, int apogee, String qualite){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+		if(!qualite.matches("PROF|ETUD[1-5]")) return ReponseEnum.SYNTAXE_QUALITE;
+
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
 		p.setQualite(qualite);
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String supprimerPersonne(String nom, String apogee){
+	public ReponseEnum supprimerPersonne(String nom, String apogee){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
 		Personne p = donnees.get(key);
 		donnees.remove(key);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 	
-	public String supprimerSurnom(String nom, String apogee, String surnom){
+	public ReponseEnum supprimerSurnom(String nom, String apogee, String surnom){
 		String key = nom+apogee;
+		if(!donnees.containsKey(key)) return ReponseEnum.NOM_INCONNU;
+
 		Personne p = donnees.get(key);
 		donnees.remove(key);
 		
 		ArrayList<String> surnoms = p.getSurnoms();
+		if(!surnoms.contains(surnom)) return ReponseEnum.SURNOM_INCONNU;
+		
 		surnoms.remove(surnom);
 		p.setSurnoms(surnoms);
 		
 		donnees.put(key, p);
+		server.setRetours(p.toString());
 		
-		return p.toString();
+		return ReponseEnum.SUC;
 	}
 
 }
