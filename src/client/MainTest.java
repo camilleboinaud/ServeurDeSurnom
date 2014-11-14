@@ -5,24 +5,15 @@ public class MainTest {
 
 		TraitementReponse reponse = null;
 		ConstructionRequete requete = null;
-<<<<<<< HEAD
 		
 		ClientTCP client = new ClientTCP("172.19.250.194", 6464);
 		//ClientTCP client = new ClientTCP("172.19.250.108", 6464);
 		System.out.println("client créé");
 		client.connect();
         System.out.println("client connecté");
-			
-		do{
-=======
 
-		System.out.println("debug 1");
-
-		ClientTCP client = new ClientTCP("localhost", 6565);
-		client.connect();
 
 		do {
->>>>>>> 1b32b95f081ed6a917b2891b38fda86d2a693971
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
