@@ -11,9 +11,11 @@ public class ServeurCom {
 	private Serveur					s				= null;
 	private ServiceN				serviceDemande	= null;
 	private List<String>			retours;
+	private Donnees donnees;
 
 	public ServeurCom(int port) {
 		s = new Serveur(port);
+		donnees = new Donnees();
 		retours = new ArrayList<String>();
 	}
 
