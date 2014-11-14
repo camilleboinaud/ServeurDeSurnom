@@ -8,7 +8,7 @@ public class Donnees {
 	
 	private HashMap<String,Personne> donnees;
 	
-	public Donnees(){
+	public Donnees(ServeurCom server){
 		donnees = new HashMap<String,Personne>();
 	}
 	

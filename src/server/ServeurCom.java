@@ -182,11 +182,11 @@ public class ServeurCom {
 		this.serviceDemande = serviceDemande;
 	}
 
-	public List<String> getRetours() {
+	public String getRetours() {
 		return retours;
 	}
 
-	public void setRetours(List<String> retours) {
+	public void setRetours(String retours) {
 		this.retours = retours;
 	}
 
