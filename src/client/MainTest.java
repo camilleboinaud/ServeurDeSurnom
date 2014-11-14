@@ -6,8 +6,11 @@ public class MainTest {
 		TraitementReponse reponse = null;
 		ConstructionRequete requete = null;
 		
-		ClientTCP client = new ClientTCP("localhost", 6565);
+		ClientTCP client = new ClientTCP("172.19.250.194", 6464);
+		//ClientTCP client = new ClientTCP("172.19.250.108", 6464);
+		System.out.println("client créé");
 		client.connect();
+        System.out.println("client connecté");
 			
 		do{
 			try {
@@ -18,6 +21,7 @@ public class MainTest {
 			requete = new ConstructionRequete();
 			System.out.println("rq: "+requete.toString());
 			client.send(requete.toString());
+            System.out.println(client.receive());
 			reponse = new TraitementReponse(client.receive());
 		} while(!reponse.affichage());
 		
