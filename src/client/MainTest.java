@@ -1,28 +1,28 @@
 package client;
 
 public class MainTest {
-	public static void main(String[] args){
-		
+	public static void main(String[] args) {
+
 		TraitementReponse reponse = null;
 		ConstructionRequete requete = null;
-		
+
 		System.out.println("debug 1");
-		
+
 		ClientTCP client = new ClientTCP("localhost", 6565);
 		client.connect();
-			
-		do{
+
+		do {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			requete = new ConstructionRequete();
-			System.out.println("rq: "+requete.toString());
+			System.out.println("rq: " + requete.toString());
 			client.send(requete.toString());
 			reponse = new TraitementReponse(client.receive());
-		} while(!reponse.affichage());
-		
+		} while (!reponse.affichage());
+
 		client.disconnect();
 
 	}
