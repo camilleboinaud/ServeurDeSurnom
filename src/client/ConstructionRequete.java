@@ -63,6 +63,11 @@ public class ConstructionRequete {
 		case SUPPRIMER_SURNOM:
 			result = ask(true,false, true, false, false, false, false,true,false,false);
 			break;
+		case DECONNECTION:
+			ArrayList<String> list = new ArrayList<String>();
+			list.add(ServiceN.DECONNECTION.toString());
+			result = list;
+			break;
 		default : 
 			break;
 		}
@@ -203,17 +208,17 @@ public class ConstructionRequete {
 	
 	private ServiceN menuService(){
 		ServiceN s = null;
-		int choice = 0;
+		String choice = "";
 		do{
 		System.out.println("Entrez le numéro du service que vous souhaitez effectuer : ");
 		System.out.println("\t1.  "+ServiceN.AJOUTER_NOM+"\t\t2.  "+ServiceN.AJOUTER_SURNOM+"\t3.  "+ServiceN.LISTER_REQUETE+"\t\t4.  "+ServiceN.LISTER_TOUT+"\n" +
 				"\t5.  "+ServiceN.LISTER_UN+"\t\t6.  "+ServiceN.MODIFIER_APOGEE+"\t7.  "+ServiceN.MODIFIER_DEPARTEMENT+"\t8.  "+ServiceN.MODIFIER_NOM+"\n"+
-				"\t9.  "+ServiceN.MODIFIER_QUALITE+"\t10. "+ServiceN.MODIFIER_SURNOM+"\t11. "+ServiceN.SUPPRIMER_NOM+"\t\t12. "+ServiceN.SUPPRIMER_SURNOM);
-		choice = scInt.nextInt();
-		} while(choice!= 1 && choice!= 2 && choice!= 3 && choice!= 4 && choice!= 5 && choice!= 6
-				&& choice!= 7 && choice!= 8 && choice!= 9 && choice!= 10 && choice!= 11 && choice!= 12);
+				"\t9.  "+ServiceN.MODIFIER_QUALITE+"\t10. "+ServiceN.MODIFIER_SURNOM+"\t11. "+ServiceN.SUPPRIMER_NOM+"\t\t12. "+ServiceN.SUPPRIMER_SURNOM+"\n"+
+				"\t13.	"+ServiceN.DECONNECTION);
+		choice = scInt.nextLine();
+		} while(!choice.matches("1|2|3|4|5|6|7|8|9|10|11|12|13"));
 		
-		switch(choice){
+		switch(Integer.parseInt(choice)){
 		case 1 :
 			s = ServiceN.AJOUTER_NOM;
 			break;
@@ -249,6 +254,9 @@ public class ConstructionRequete {
 			break;
 		case 12 :
 			s = ServiceN.SUPPRIMER_SURNOM;
+			break;
+		case 13 :
+			s = ServiceN.DECONNECTION;
 			break;
 		}
 		

@@ -63,6 +63,7 @@ public class ClientTCP {
 			try{
 				bf = new BufferedReader(new InputStreamReader(is));
 				while((tmp = bf.readLine())!=null){
+					System.out.println();
 					if(tmp.indexOf("<#end>")!=-1){
 						readServer.add(tmp);
 					}

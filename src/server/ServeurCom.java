@@ -89,6 +89,9 @@ public class ServeurCom {
 				reponseToSend = donnees.supprimerSurnom(params[2],
 						Integer.parseInt(params[3]), params[4]);
 				break;
+			case DECONNECTION:
+				reponseToSend = ReponseEnum.DECONNECTION;
+				break;
 			default:
 				return ReponseEnum.SERVICE_INCONNU;
 			}
@@ -100,7 +103,13 @@ public class ServeurCom {
 	private void sendReponse(ServiceN service, ReponseEnum rep, String retours) {
 		if (rep == ReponseEnum.SUC) {
 			this.s.send("SUC-" + service.toString() +"<#>"+retours+ "<#end>\n");
-		} else{
+		} else if(rep == ReponseEnum.DECONNECTION){
+			try {
+				disconnect();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
 			this.s.send("ERR-"+rep+"<#end>\n");
 		}
 		// this.s.send("SUC")

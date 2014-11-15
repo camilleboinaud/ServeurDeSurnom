@@ -10,7 +10,8 @@ public enum ReponseEnum {
 	SURNOM_INCONNU("SURNOM_INCONNU"),
 	FILTRE_INCONNU("FILTRE_INCONNU"),
 	SERVICE_INCONNU("SERVICE_INCONNU"),
-	SUC("SUC");
+	SUC("SUC"),
+	DECONNECTION("DECONNECTION");
 	
 	private String nom = "";
 	private ReponseEnum(String nom){

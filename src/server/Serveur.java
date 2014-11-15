@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,7 +14,6 @@ public class Serveur {
 	DataOutputStream	output;
 	DataInputStream		input;
 	BufferedReader		buffer;
-	PrintStream			printer;
 	
 	public Serveur(int port) {
 		try {
@@ -23,8 +21,6 @@ public class Serveur {
 			clientSoc = soc.accept();
 			output = new DataOutputStream(clientSoc.getOutputStream());
 			input = new DataInputStream(clientSoc.getInputStream());
-			buffer = new BufferedReader(new InputStreamReader(input));
-			printer = new PrintStream(clientSoc.getOutputStream());
 
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -36,6 +32,8 @@ public class Serveur {
 	 * @param lecture
 	 */
 	public String getMessageFromClient(){
+		buffer = new BufferedReader(new InputStreamReader(input));
+
 		String lecture="";
 		String encours="";
 		try {
@@ -46,6 +44,7 @@ public class Serveur {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return lecture;
 	}
 	/**
@@ -54,7 +53,6 @@ public class Serveur {
 	 */
 	public void send(String tosend){
 		try {
-			System.out.println(tosend);
 			this.output.writeBytes(tosend);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -50,9 +50,7 @@ public class Donnees {
 		
 		s.add(surnom);
 		p.setSurnoms(s);
-		
-		System.out.println(p.getSurnoms());
-		
+			
 		donnees.remove(key);
 		donnees.put(key, p);
 		
@@ -95,8 +93,7 @@ public class Donnees {
 			data = data +donnees.get(it.next()).toString();
 		}while(it.hasNext());
 		server.setRetours(data);
-		System.out.println(data);
-		
+	
 		return ReponseEnum.SUC;
 	}
 	
