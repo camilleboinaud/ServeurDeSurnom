@@ -102,7 +102,9 @@ public class ServeurCom {
 
 	private void sendReponse(ServiceN service, ReponseEnum rep, String retours) {
 		if (rep == ReponseEnum.SUC) {
-			this.s.send("SUC-" + service.toString() +"<#>"+retours+ "<#end>\n");
+			String reponse = "SUC-" + service.toString() +"<#>"+retours+ "<#end>\n";
+			this.s.send(reponse);
+			System.out.println(""+reponse);
 		} else if(rep == ReponseEnum.DECONNECTION){
 			try {
 				disconnect();
@@ -110,7 +112,9 @@ public class ServeurCom {
 				e.printStackTrace();
 			}
 		}else{
-			this.s.send("ERR-"+rep+"<#end>\n");
+			String error = "ERR-"+rep+"<#end>\n";
+			this.s.send(error);
+			System.out.println(""+error);
 		}
 		// this.s.send("SUC")
 	}
@@ -136,7 +140,7 @@ public class ServeurCom {
 	}
 
 	public static void main(String args[]) {
-		ServeurCom sc = new ServeurCom(2222);
+		ServeurCom sc = new ServeurCom(2424);
 		try {
 			sc.execute();
 			sc.disconnect();
