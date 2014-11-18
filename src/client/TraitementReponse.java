@@ -10,8 +10,7 @@ public class TraitementReponse {
 		this.reponse = reponse;
 	}
 	
-	public boolean affichage(){
-		
+	public void affichage(){
 		boolean result = true;
 		
 		for(String s : reponse){
@@ -90,7 +89,6 @@ public class TraitementReponse {
 				}
 			} 
 		}
-		return result;
 	}
 	
 	private void afficherAjouterNom(String[] arg){
