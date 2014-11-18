@@ -73,9 +73,7 @@ public class ClientTCP {
 				System.err.println(e.getMessage());
 			}
 		}
-		
 		return readServer;
-		
 	}
 	
 	
