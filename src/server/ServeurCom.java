@@ -1,37 +1,36 @@
 package server;
 
-import java.io.IOException;
 
 import client.ServiceN;
 
 public class ServeurCom {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
-	private Serveur			s				= null;
 	private ServiceN		serviceDemande	= null;
 	private String			retours;
 	private Donnees			donnees;
 
-	public ServeurCom(int port) {
-		s = new Serveur(port);
+	public ServeurCom() {
 		donnees = new Donnees(this);
 		retours = "";
 	}
 
-	public void execute() {
-		String lecture = s.getMessageFromClient();
+	public String execute(String lecture){
+		
+		if(lecture.indexOf(ReponseEnum.DECONNECTION.toString()) != -1){
+			return ReponseEnum.DECONNECTION.toString();
+		}
 		// lecture+=s.getMessageFromClient();
 		if ((lecture.indexOf(MARQUEUR_DE_FIN) != (lecture.length() - MARQUEUR_DE_FIN
 				.length()))) {
-			s.send("ERR-ERREUR_FIN_REQUETE<#end>\n");
+			 return ("ERR-ERREUR_FIN_REQUETE<#end>\n");
 		} else {
-			this.decrypt(lecture);
+			return this.decrypt(lecture);
 		}
-
 	}
 
-	private void decrypt(String msg) {
+	private String decrypt(String msg) {
 		ReponseEnum reponse = this.traitementRequete(msg);
-		this.sendReponse(serviceDemande, reponse, retours);
+		return this.sendReponse(serviceDemande, reponse, retours);
 
 	}
 
@@ -89,9 +88,6 @@ public class ServeurCom {
 				reponseToSend = donnees.supprimerSurnom(params[2],
 						Integer.parseInt(params[3]), params[4]);
 				break;
-			case DECONNECTION:
-				reponseToSend = ReponseEnum.DECONNECTION;
-				break;
 			default:
 				return ReponseEnum.SERVICE_INCONNU;
 			}
@@ -100,27 +96,19 @@ public class ServeurCom {
 	}
 
 
-	private void sendReponse(ServiceN service, ReponseEnum rep, String retours) {
+	private String sendReponse(ServiceN service, ReponseEnum rep, String retours) {
 		if (rep == ReponseEnum.SUC) {
 			String reponse = "SUC-" + service.toString() +"<#>"+retours+ "<#end>\n";
-			this.s.send(reponse);
 			System.out.println(""+reponse);
-		} else if(rep == ReponseEnum.DECONNECTION){
-			try {
-				disconnect();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			return(reponse);
+			
 		}else{
 			String error = "ERR-"+rep+"<#end>\n";
-			this.s.send(error);
 			System.out.println(""+error);
+			return(error);
+			
 		}
 		// this.s.send("SUC")
-	}
-
-	public void disconnect() throws IOException {
-		s.disconnect();
 	}
 
 	public ServiceN getServiceDemande() {
@@ -139,14 +127,7 @@ public class ServeurCom {
 		this.retours = retours;
 	}
 
-	public static void main(String args[]) {
-		ServeurCom sc = new ServeurCom(2424);
-		try {
-			sc.execute();
-			sc.disconnect();
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-	}
+
+	
 
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Serveur {
 	ServerSocket		soc			= null;
@@ -28,7 +29,7 @@ public class Serveur {
 	}
 
 	/**
-	 * Décrypter le message reçu
+	 * Renvoyer le message reçu
 	 * @param lecture
 	 */
 	public String getMessageFromClient(){
@@ -44,7 +45,8 @@ public class Serveur {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
+		
 		return lecture;
 	}
 	/**
@@ -54,22 +56,40 @@ public class Serveur {
 	public void send(String tosend){
 		try {
 			this.output.writeBytes(tosend);
-		} catch (IOException e) {
-			e.printStackTrace();
+		}catch (IOException se){
+			System.out.println(se.getMessage());
+			this.disconnect();
 		}
 	}
 	/**
 	 * Fermer tous les streams et ports
 	 */
-	public void disconnect() throws IOException{
-		buffer.close();
-		input.close();
-		output.close();
-		clientSoc.close();
-		soc.close();
+	public void disconnect(){
+		try {
+			buffer.close();
+			input.close();
+			output.close();
+			clientSoc.close();
+			soc.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+	public static void main(String args[]) {
+		Serveur s = new Serveur(2424);
+		ServeurCom sc = new ServeurCom();
+		String rec="";
+			while(true){
+				rec = sc.execute(s.getMessageFromClient());
+				if(ReponseEnum.DECONNECTION.toString().equals(rec)){
+					break;
+				}else{
+					s.send(rec);
+				}
+						
+			}
+			s.disconnect();
 	}
 	
-	
-	
-
-}
+	}
