@@ -76,11 +76,30 @@ public class Serveur {
 		}
 		
 	}
+	
+	 private boolean accept() {
+	 
+		try {
+			clientSoc = soc.accept();
+			output = new DataOutputStream(clientSoc.getOutputStream());
+			input = new DataInputStream(clientSoc.getInputStream());
+		}
+		catch (Exception e){return false;}
+
+		System.out.println("Client connecté");
+		return true;
+	}
+	
 	public static void main(String args[]) {
 		Serveur s = new Serveur(2424);
 		ServeurCom sc = new ServeurCom();
 		String rec="";
+		boolean running=true;
+		while(running){
+			System.out.println("1er While");
+			s.accept();
 			while(true){
+				System.out.println("2nd While");
 				rec = sc.execute(s.getMessageFromClient());
 				if(ReponseEnum.DECONNECTION.toString().equals(rec)){
 					break;
@@ -89,6 +108,7 @@ public class Serveur {
 				}
 						
 			}
+		}
 			s.disconnect();
 	}
 	
