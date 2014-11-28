@@ -1,6 +1,7 @@
 package client;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConstructionRequete {
@@ -12,158 +13,69 @@ public class ConstructionRequete {
 	private Scanner sc = null;
 	private Scanner scInt = null;
 
-	private ServiceN service = null;
-	private ArrayList<String> params = null;
-	public String requete = "";
+	private List<String> parametres = null;
+	private String service = "";
 
 	
 	public ConstructionRequete(){
 		sc = new Scanner(System.in);
 		scInt = new Scanner(System.in);
+		parametres = menuService();
+	}
 
-		service = menuService();
-		params = menuParametre();
-	}
 	
-	
-	private ArrayList<String> menuParametre(){
-		ArrayList<String> result = null;
-
-		switch(service){
-		case AJOUTER_NOM :
-			result = ask(true,false, true, false, true, true, true,false,false,false);
-			break;
-		case AJOUTER_SURNOM :
-			result = ask(true,false, true, false, false, false, false,true,false,false);
-			break;
-		case LISTER_REQUETE :
-			result = ask(false,false, false, false, false, false, false,false,false,true);
-			break;
-		case LISTER_UN:
-			result = ask(true,false, true, false, false, false, false,false,false,false);
-			break;
-		case MODIFIER_APOGEE:
-			result = ask(true,false, true, true, false, false, false,false,false,false);
-			break;
-		case MODIFIER_DEPARTEMENT:
-			result = ask(true,false, true, false, false, false, true,false,false,false);
-			break;
-		case MODIFIER_NOM:
-			result = ask(true,true, true, false, false, false, false,false,false,false);
-			break;
-		case MODIFIER_QUALITE:
-			result = ask(true,false, true, false, false, true, false,false,false,false);
-			break;
-		case MODIFIER_SURNOM:
-			result = ask(true,false, true, false, false, false, false,true,true,false);
-			break;
-		case SUPPRIMER_NOM:
-			result = ask(true,false, true, false, false, false, false,false,false,false);
-			break;
-		case SUPPRIMER_SURNOM:
-			result = ask(true,false, true, false, false, false, false,true,false,false);
-			break;
-		case DECONNECTION:
-			ArrayList<String> list = new ArrayList<String>();
-			list.add(ServiceN.DECONNECTION.toString());
-			result = list;
-			break;
-		default : 
-			break;
-		}
-		
-		
-		return result;
-		
-	}
-	
-	private ArrayList<String> ask(
-			boolean nom, boolean newNom,
-			boolean apogee, boolean newApogee,
-			boolean genre, 
-			boolean qualite, 
-			boolean departement,  
-			boolean surnom, boolean newSurnom,
-			boolean filtre){
-		
-		ArrayList<String> result = new ArrayList<String>();
-				
-		if(nom){
-			result.add(askNom("NOM"));
-		}
-		
-		if(apogee){
-			result.add(askApogee("N"));
-		}
-		
-		if(genre){
-			result.add(askGenre());
-		}
-		
-		if(qualite){
-			result.add(askQualite());
-		}
-		
-		if(departement){
-			result.add(askDepartement());
-		}
-		
-		if(surnom){
-			result.add(askNom("SURNOM"));
-		}
-		
-		if(newSurnom){
-			result.add(askNom("NEWSURNOM"));
-		}
-		
-		if(newNom){
-			result.add(askNom("NEWNOM"));
-		}
-		
-		if(newApogee){
-			result.add(askApogee("NEW"));
-		}
-				
-		if(filtre){
-			result.add(askNom("FILTRE"));
-		}
-				
-		return result;
-	}
-	
-	private String askNom(String type){
+	private String askNom(){
 		String answer = "";
 		do{
-			if(type.equals("NOM")) System.out.println("Saisissez le nom de la personne : ");
-			else if(type.equals("NEWNOM")) System.out.println("Saisissez le nouveau nom de la personne : ");
-			else if(type.equals("SURNOM")) System.out.println("Saisissez un surnom de la personne : ");
-			else if(type.equals("NEWSURNOM")) System.out.println("Saisissez le nouveau surnom de la personne : ");
-			else System.out.println("Saisissez un filtre de recherche : ");
+			System.out.println("Saisissez le nom de la personne : ");
 			answer = sc.nextLine();
 		} while(answer.equals(""));
 		return answer;
 	}
 	
-	private String askApogee(String s){
+	private String askNouveauNom(){
 		String answer = "";
-		
 		do{
-			if(s.equals("N")) System.out.println("Saisissez le numéro Apogée de la personne : ");
-			else System.out.println("Saisissez le nouveau numéro Apogée de la personne : ");
-
+			System.out.println("Saisissez le nouveau nom de la personne : ");
 			answer = sc.nextLine();
-		} while(answer.length() != 8);
-	
+		} while(answer.equals(""));
 		return answer;
 	}
 	
-	private String askGenre(){
+	private String askSurnom(){
+		String answer = "";
+		do{
+			System.out.println("Saisissez un surnom de la personne : ");
+			answer = sc.nextLine();
+		} while(answer.equals(""));
+		return answer;
+	}
+	
+	private String askNouveauSurnom(){
+		String answer = "";
+		do{
+			System.out.println("Saisissez le nouveau surnom de la personne : ");
+			answer = sc.nextLine();
+		} while(answer.equals(""));
+		return answer;
+	}
+	
+	private String askFiltreRecherche(){
+		String answer = "";
+		do{
+			System.out.println("Saisissez un filtre de recherche : ");
+			answer = sc.nextLine();
+		} while(answer.equals(""));
+		return answer;
+	}
+	
+	private String askApogee(){
 		String answer = "";
 		
 		do{
-			System.out.println("Saisissez le genre de la personne (M ou F) : ");
+			System.out.println("Saisissez le numéro Apogée de la personne : ");
 			answer = sc.nextLine();
-		} while(!answer.equals("M") && !answer.equals("F"));
+		} while(answer.length() != 8);
 	
 		return answer;
 	}
@@ -174,13 +86,13 @@ public class ConstructionRequete {
 		do{
 			System.out.println("Saisissez le statut de la personne (ETUD pour un étudiant, PROF pour un professeur) : ");
 			answer = sc.nextLine();
-		} while(!answer.equals("ETUD") && !answer.equals("PROF"));
+		} while(!answer.matches("ETUD|PROF"));
 		if(answer.equals("ETUD")){
 			String annee = "";
 			do{
 				System.out.println("Saisissez le numéro d'année de la personne (1 à 5) : ");
 				annee = sc.nextLine();
-			} while(!annee.equals("1") && !annee.equals("2")&& !annee.equals("3") && !annee.equals("4") && !annee.equals("5"));
+			} while(!annee.matches("1|2|3|4|5"));
 			answer = answer.concat(annee);
 		}
 	
@@ -193,86 +105,100 @@ public class ConstructionRequete {
 		do{
 			System.out.println("Saisissez le département où travaille la personne : ");
 			answer = sc.nextLine();
-		} while(!answer.equals("SI") 
-				&& !answer.equals("MAM")
-				&& !answer.equals("ELEC")
-				&& !answer.equals("GE")
-				&& !answer.equals("BAT")
-				&& !answer.equals("GB")
-				&& !answer.equals("ELECII")
-				&& !answer.equals("PEIP"));
+		} while(!answer.matches("SI|MAM|ELEC|GE|BAT|GB|ELECII|PEIP"));
 	
 		return answer;
 	}
 	
 	
-	private ServiceN menuService(){
-		ServiceN s = null;
+	private List<String> menuService(){
+		List<String> s = new ArrayList<String>();
 		String choice = "";
 		do{
 		System.out.println("Entrez le numéro du service que vous souhaitez effectuer : ");
-		System.out.println("\t1.  "+ServiceN.AJOUTER_NOM+"\t\t2.  "+ServiceN.AJOUTER_SURNOM+"\t3.  "+ServiceN.LISTER_REQUETE+"\t\t4.  "+ServiceN.LISTER_TOUT+"\n" +
-				"\t5.  "+ServiceN.LISTER_UN+"\t\t6.  "+ServiceN.MODIFIER_APOGEE+"\t7.  "+ServiceN.MODIFIER_DEPARTEMENT+"\t8.  "+ServiceN.MODIFIER_NOM+"\n"+
-				"\t9.  "+ServiceN.MODIFIER_QUALITE+"\t10. "+ServiceN.MODIFIER_SURNOM+"\t11. "+ServiceN.SUPPRIMER_NOM+"\t\t12. "+ServiceN.SUPPRIMER_SURNOM+"\n"+
-				"\t13.	"+ServiceN.DECONNECTION);
+		System.out.println("\t1.  "+ServiceN.AJOUTER_NOM+"\t\t2.  "+ServiceN.AJOUTER_SURNOM+"\t\t3.  "+ServiceN.LISTER_REQUETE+"\t\t4.  "+ServiceN.LISTER_TOUT+"\n" +
+				"\t5.  "+ServiceN.LISTER_UN+"\t\t6.  "+ServiceN.MODIFIER_DEPARTEMENT+"\t7.  "+ServiceN.MODIFIER_NOM+"\t\t8.  "+ServiceN.MODIFIER_QUALITE+"\n"+
+				"\t9. "+ServiceN.MODIFIER_SURNOM+"\t10. "+ServiceN.SUPPRIMER_NOM+"\t\t11. "+ServiceN.SUPPRIMER_SURNOM+"\t\t12. "+ServiceN.DECONNECTION);
 		choice = scInt.nextLine();
 		} while(!choice.matches("1|2|3|4|5|6|7|8|9|10|11|12|13"));
 		
 		switch(Integer.parseInt(choice)){
 		case 1 :
-			s = ServiceN.AJOUTER_NOM;
+			service = ServiceN.AJOUTER_NOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askQualite());
+			s.add(this.askDepartement());
 			break;
 		case 2 :
-			s = ServiceN.AJOUTER_SURNOM;
+			service = ServiceN.AJOUTER_SURNOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askSurnom());
 			break;
 		case 3 :
-			s = ServiceN.LISTER_REQUETE;
+			service = ServiceN.LISTER_REQUETE.toString();
+			s.add(this.askFiltreRecherche());
 			break;
 		case 4 :
-			s = ServiceN.LISTER_TOUT;
+			service = ServiceN.LISTER_TOUT.toString();
 			break;
 		case 5 :
-			s = ServiceN.LISTER_UN;
+			service = ServiceN.LISTER_UN.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
 			break;
 		case 6 :
-			s = ServiceN.MODIFIER_APOGEE;
+			service = ServiceN.MODIFIER_DEPARTEMENT.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askDepartement());
 			break;
 		case 7 :
-			s = ServiceN.MODIFIER_DEPARTEMENT;
+			service = ServiceN.MODIFIER_NOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askNouveauNom());
 			break;
 		case 8 :
-			s = ServiceN.MODIFIER_NOM;
+			service = ServiceN.MODIFIER_QUALITE.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askQualite());
 			break;
 		case 9 :
-			s = ServiceN.MODIFIER_QUALITE;
+			service = ServiceN.MODIFIER_SURNOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askSurnom());
+			s.add(this.askNouveauSurnom());
 			break;
 		case 10 :
-			s = ServiceN.MODIFIER_SURNOM;
+			service = ServiceN.SUPPRIMER_NOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
 			break;
 		case 11 :
-			s = ServiceN.SUPPRIMER_NOM;
+			service = ServiceN.SUPPRIMER_SURNOM.toString();
+			s.add(this.askNom());
+			s.add(this.askApogee());
+			s.add(this.askSurnom());
 			break;
 		case 12 :
-			s = ServiceN.SUPPRIMER_SURNOM;
-			break;
-		case 13 :
-			s = ServiceN.DECONNECTION;
+			service = ServiceN.DECONNECTION.toString();
 			break;
 		}
 		
 		return s;
 	}
 	
-	@Override
-	public String toString(){
-		String result = "";
-		
-		result = "REQ"+SEP+service.toString();
-		if(params!=null){
-			for(String s : params){
-				if(!s.equals("")) result = result+SEP+s;
-			}
-		}
-		return result+END+"\n";
+	public String getService(){
+		return this.service;
 	}
+	
+	public List<String> getParametres(){
+		return this.parametres;
+	}
+	
+
 }
