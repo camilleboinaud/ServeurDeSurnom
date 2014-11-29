@@ -6,15 +6,13 @@ public class Personne {
 	
 	private String nom;
 	private int apogee;
-	private String genre;
 	private String qualite;
 	private String departement;
 	private ArrayList<String> surnoms;
 	
-	public Personne(String nom, int apogee, String genre, String qualite, String departement){
+	public Personne(String nom, int apogee, String qualite, String departement){
 		this.nom = nom;
 		this.apogee = apogee;
-		this.genre = genre;
 		this.qualite = qualite;
 		this.departement = departement;
 		this.surnoms = new ArrayList<String>();
@@ -30,18 +28,6 @@ public class Personne {
 
 	public int getApogee() {
 		return apogee;
-	}
-
-	public void setApogee(int apogee) {
-		this.apogee = apogee;
-	}
-
-	public String getGenre() {
-		return genre;
-	}
-
-	public void setGenre(String genre) {
-		this.genre = genre;
 	}
 
 	public String getQualite() {
@@ -66,17 +52,6 @@ public class Personne {
 
 	public void setSurnoms(ArrayList<String> surnoms) {
 		this.surnoms = surnoms;
-	}
-
-	public String toString(){
-		String result =  nom+"</>"+apogee+"</>"+genre+"</>"+qualite+"</>"+departement+"<:>";
-		if(surnoms.size()>0) result = result+surnoms.get(0);
-		if(surnoms.size()>1){
-			for(String surnom : surnoms){
-				result = result+"<,>"+surnom;
-			}
-		}
-		return result.concat("<;>");
 	}
 
 }

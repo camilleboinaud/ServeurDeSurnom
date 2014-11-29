@@ -91,7 +91,7 @@ public class Serveur {
 	}
 	
 	public static void main(String args[]) {
-		Serveur s = new Serveur(2424);
+		Serveur s = new Serveur(4040);
 		ServeurCom sc = new ServeurCom();
 		String rec="";
 		boolean running=true;
@@ -100,8 +100,10 @@ public class Serveur {
 			s.accept();
 			while(true){
 				System.out.println("2nd While");
+				System.out.println(s.getMessageFromClient());
 				rec = sc.execute(s.getMessageFromClient());
-				if(ReponseEnum.DECONNECTION.toString().equals(rec)){
+				System.out.println(rec);
+				if(rec.indexOf("DECONNECTION")!=-1){
 					break;
 				}else{
 					s.send(rec);

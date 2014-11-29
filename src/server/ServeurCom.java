@@ -1,133 +1,126 @@
 package server;
 
 
+import com.google.gson.*;
 import client.ServiceN;
 
 public class ServeurCom {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
-	private ServiceN		serviceDemande	= null;
-	private String			retours;
+	private ServiceN		serviceName	= null;
 	private Services		services;
+	private GsonBuilder builder;
+    private Gson gson;
 
 	public ServeurCom() {
+		builder = new GsonBuilder();
+		gson = builder.setPrettyPrinting().create();
 		services = new Services();
-		retours = "";
 	}
 
 	public String execute(String lecture){
-		
-		if(lecture.indexOf(ReponseEnum.DECONNECTION.toString()) != -1){
-			return ReponseEnum.DECONNECTION.toString();
-		}
-		// lecture+=s.getMessageFromClient();
-		if ((lecture.indexOf(MARQUEUR_DE_FIN) != (lecture.length() - MARQUEUR_DE_FIN
-				.length()))) {
-			 return ("ERR-ERREUR_FIN_REQUETE<#end>\n");
-		} else {
-			return this.decrypt(lecture);
-		}
-	}
-
-	private String decrypt(String msg) {
-		RetourService reponse = this.traitementRequete(msg);
-		return this.sendReponse(serviceDemande, reponse.getStatut(), reponse.getReponse());
-
+		RetourService reponse = this.traitementRequete(lecture);
+		return gson.toJson(reponse);
 	}
 
 	private RetourService traitementRequete(String msg) {
-		RetourService reponseToSend = null;
-		String params[] = msg.split("<#>|<#end>");
-		serviceDemande = client.ServiceN.valueOf(params[1]);
+		//Conversion du json en objet
+		JsonParser parser = new JsonParser();
+		JsonElement element = parser.parse(msg);
+		JsonObject service = element.getAsJsonObject();
 		
-		if (params[0].equals("REQ")) {
-			switch (serviceDemande) {
+		serviceName = client.ServiceN.valueOf(service.get("service").getAsString());
+		JsonObject parametres = service.get("parametres").getAsJsonObject();
+
+		RetourService reponseToSend = null;
+		
+		switch (serviceName) {
 			case AJOUTER_NOM:
-				reponseToSend = services.ajouterPersonne(new Personne(params[2],
-						Integer.parseInt(params[3]), params[4],
-						params[5], params[6]));
+				reponseToSend = services.ajouterPersonne(
+						new Personne(parametres.get("nom").getAsString(),
+									parametres.get("apogee").getAsInt(),
+									parametres.get("qualite").getAsString(),
+									parametres.get("departement").getAsString()
+						));
 				break;
 			case AJOUTER_SURNOM:
-				reponseToSend = services.ajouterSurnom(params[2],
-						Integer.parseInt(params[3]), params[4]);
+				reponseToSend = services.ajouterSurnom(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("surnom").getAsString()
+				);
 				break;
 			case LISTER_REQUETE:
-				reponseToSend = services.listerRequete(params[2]);
+				reponseToSend = services.listerRequete(
+						parametres.get("filtre").getAsString()
+				);
 				break;
 			case LISTER_TOUT:
 				reponseToSend = services.listerTout();
 				break;
 			case LISTER_UN:
-				reponseToSend = services.listerUn(params[2], Integer.parseInt(params[3]));
-				break;
-			case MODIFIER_APOGEE:
-				reponseToSend = services.modifierApogee(params[2],
-						Integer.parseInt(params[3]),
-						Integer.parseInt(params[4]));
+				reponseToSend = services.listerUn(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt()
+				);
 				break;
 			case MODIFIER_DEPARTEMENT:
-				reponseToSend = services.modifierDepartement(params[2],
-						Integer.parseInt(params[3]), params[4]);
+				reponseToSend = services.modifierDepartement(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("departement").getAsString()
+				);
 				break;
 			case MODIFIER_NOM:
-				reponseToSend = services.modifierNom(params[2],
-						Integer.parseInt(params[3]), params[4]);
+				reponseToSend = services.modifierNom(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("nouveauNom").getAsString()
+				);
 				break;
 			case MODIFIER_QUALITE:
-				reponseToSend = services.modifierQualite(params[2],
-						Integer.parseInt(params[3]), params[4]);
+				reponseToSend = services.modifierQualite(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("qualite").getAsString()
+				);
 				break;
 			case MODIFIER_SURNOM:
-				reponseToSend = services.modifierSurnom(params[2],
-						Integer.parseInt(params[3]), params[4], params[5]);
+				reponseToSend = services.modifierSurnom(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("surnom").getAsString(),
+						parametres.get("nouveauSurnom").getAsString()
+				);
 				break;
 			case SUPPRIMER_NOM:
-				reponseToSend = services.supprimerPersonne(params[2],
-						Integer.parseInt(params[3]));
+				reponseToSend = services.supprimerPersonne(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt()
+				);
 				break;
 			case SUPPRIMER_SURNOM:
-				reponseToSend = services.supprimerSurnom(params[2],
-						Integer.parseInt(params[3]), params[4]);
+				reponseToSend = services.supprimerSurnom(
+						parametres.get("nom").getAsString(),
+						parametres.get("apogee").getAsInt(),
+						parametres.get("surnom").getAsString()
+				);
+				break;
+			case DECONNECTION:
+				reponseToSend = services.deconnection();
 				break;
 			default:
-				return new RetourService(ReponseEnum.SERVICE_INCONNU,"");
+				return new RetourService(ReponseEnum.SERVICE_INCONNU,"","Le service demandé est inconnu","");
 			}
-		}
 		return reponseToSend;
 	}
 
 
-	private String sendReponse(ServiceN service, ReponseEnum rep, String retours) {
-		if (rep == ReponseEnum.SUC) {
-			String reponse = "SUC-" + service.toString() +"<#>"+retours+ "<#end>\n";
-			System.out.println(""+reponse);
-			return(reponse);
-			
-		}else{
-			String error = "ERR-"+rep+"<#end>\n";
-			System.out.println(""+error);
-			return(error);
-			
-		}
-		// this.s.send("SUC")
-	}
-
 	public ServiceN getServiceDemande() {
-		return serviceDemande;
+		return serviceName;
 	}
 
 	public void setServiceDemande(ServiceN serviceDemande) {
-		this.serviceDemande = serviceDemande;
+		this.serviceName = serviceDemande;
 	}
-
-	public String getRetours() {
-		return retours;
-	}
-
-	public void setRetours(String retours) {
-		this.retours = retours;
-	}
-
-
-	
 
 }
