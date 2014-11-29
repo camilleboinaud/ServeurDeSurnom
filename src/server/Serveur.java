@@ -78,7 +78,6 @@ public class Serveur {
 	}
 	
 	 private boolean accept() {
-	 
 		try {
 			clientSoc = soc.accept();
 			output = new DataOutputStream(clientSoc.getOutputStream());

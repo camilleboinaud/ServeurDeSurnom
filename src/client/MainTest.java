@@ -1,7 +1,5 @@
 package client;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -11,10 +9,9 @@ public class MainTest {
 		GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
 
-		TraitementReponse reponse = null;
 		ConstructionRequete requete;
 		
-		ClientTCP client = new ClientTCP("localhost", 2424);
+		ClientTCP client = new ClientTCP("localhost", 4040);
 		//ClientTCP client = new ClientTCP("172.19.250.194", 2424);
 		client.connect();
 
@@ -23,10 +20,11 @@ public class MainTest {
 			requete = new ConstructionRequete();
 			String json = gson.toJson(requete);
 			System.out.println(json);
-			client.send(requete.toString());
+			client.send(json);
 			if(requete.toString().indexOf(ServiceN.DECONNECTION.toString())!=-1) break;
-			reponse = new TraitementReponse(client.receive());
-			reponse.affichage();
+			System.out.println(client.receive());
+			//reponse = new TraitementReponse();
+			//reponse.affichage();
 		} while (true);
 
 		client.disconnect();

@@ -27,9 +27,7 @@ public class ClientTCP {
 	
 	public void connect(){
 		
-		if(mySocket!=null) disconnect(true,false,false);
-		if(os!=null) disconnect(false,true,false);
-		if(is!=null) disconnect(false,false,true);
+		if(mySocket!=null && os!=null && is!=null) disconnect();
 			
 		try{
 			mySocket = new Socket(ipServer, numPort);
@@ -55,37 +53,28 @@ public class ClientTCP {
 		}
 	}
 	
-	public ArrayList<String> receive(){
-		ArrayList<String> readServer = new ArrayList<String>();
+	public String receive(){
 		String tmp = "";
 
 		if(mySocket!=null && os!=null && is!=null){
 			try{
 				bf = new BufferedReader(new InputStreamReader(is));
-				while((tmp = bf.readLine())!=null){
-					System.out.println();
-					if(tmp.indexOf("<#end>")!=-1){
-						readServer.add(tmp);
-					}
-				}				
+				if((tmp = bf.readLine())!=null) return tmp;		
 			}catch(IOException e){
 				System.err.println("Impossible to reach I/O from host : "+ipServer);
 				System.err.println(e.getMessage());
 			}
 		}
-		return readServer;
+		return null;
 	}
 	
 	
+
 	public void disconnect(){
-		disconnect(true,true,true);		
-	}
-	
-	private void disconnect(boolean socket, boolean output, boolean input){
 		try {
-			if(output) os.close();
-			if(input) is.close();
-			if(socket) mySocket.close();
+			os.close();
+			is.close();
+			mySocket.close();
 		} catch(UnknownHostException e){
 			System.err.println("Unknown host : "+ipServer);
 		} catch(IOException e){
