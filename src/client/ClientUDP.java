@@ -28,8 +28,8 @@ public class ClientUDP {
 	public void execute() {
 		
 		byte buffer[] = new byte[1024];
-		//buffer = ("test").getBytes();
-		this.datapacketsend = new DatagramPacket(buffer, length, serveur,
+		buffer = ("test").getBytes();
+		this.datapacketsend = new DatagramPacket(buffer, buffer.length, serveur,
 				this.port);
 		try {
 			socket = new DatagramSocket();
