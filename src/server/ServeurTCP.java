@@ -7,16 +7,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
-public class Serveur {
+public class ServeurTCP {
 	ServerSocket		soc			= null;
 	Socket				clientSoc	= null;
 	DataOutputStream	output;
 	DataInputStream		input;
 	BufferedReader		buffer;
 	
-	public Serveur(int port) {
+	public ServeurTCP(int port) {
 		try {
 			soc = new ServerSocket(port);
 			clientSoc = soc.accept();
@@ -90,8 +89,8 @@ public class Serveur {
 	}
 	
 	public static void main(String args[]) {
-		Serveur s = new Serveur(4040);
-		ServeurCom sc = new ServeurCom();
+		ServeurTCP s = new ServeurTCP(4040);
+		TraitementRequete sc = new TraitementRequete();
 		String rec="";
 		boolean running=true;
 		while(running){

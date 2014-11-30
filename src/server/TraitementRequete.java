@@ -4,14 +4,14 @@ package server;
 import com.google.gson.*;
 import client.ServiceN;
 
-public class ServeurCom {
+public class TraitementRequete {
 	public static String	MARQUEUR_DE_FIN	= "<#end>";
 	private ServiceN		serviceName	= null;
 	private Services		services;
 	private GsonBuilder builder;
     private Gson gson;
 
-	public ServeurCom() {
+	public TraitementRequete() {
 		builder = new GsonBuilder();
 		gson = builder.setPrettyPrinting().create();
 		services = new Services();
