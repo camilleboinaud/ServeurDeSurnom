@@ -75,7 +75,10 @@ public class ServeurTCP {
 		}
 		
 	}
-	
+	/**
+	 * Accepter un nouveau client
+	 * @return boolean (tout s'est passé ou pas)
+	 */
 	 private boolean accept() {
 		try {
 			clientSoc = soc.accept();
