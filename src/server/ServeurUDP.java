@@ -81,7 +81,7 @@ public class ServeurUDP {
 	}
 
 	public static void main(String args[]) {
-		ServeurUDP sudp = new ServeurUDP(6060);
+		ServeurUDP sudp = new ServeurUDP(7070);
 		TraitementRequete sc = new TraitementRequete();
 		String rec="";
 		boolean running=true;
@@ -89,6 +89,7 @@ public class ServeurUDP {
 			System.out.println("1er While");
 			while (true) {
 				DatagramPacket dt = sudp.receive();
+				System.out.println("avant traitement : "+new String(dt.getData()));
 				rec = sc.execute(new String(dt.getData()));
 				InetAddress addr = dt.getAddress();
 				int porto = dt.getPort();

@@ -92,7 +92,7 @@ public class ServeurTCP {
 	}
 	
 	public static void main(String args[]) {
-		ServeurTCP s = new ServeurTCP(4040);
+		ServeurTCP s = new ServeurTCP(7070);
 		TraitementRequete sc = new TraitementRequete();
 		String rec="";
 		boolean running=true;

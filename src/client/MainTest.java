@@ -11,9 +11,9 @@ public class MainTest {
 
 		ConstructionRequete requete;
 		
-		//ClientTCP client = new ClientTCP("localhost", 4040);
+		ClientTCP client = new ClientTCP("localhost", 7070);
 		//ClientTCP client = new ClientTCP("172.19.250.194", 2424);
-		ClientUDP client = new ClientUDP("localhost", 6060);
+		//ClientUDP client = new ClientUDP("localhost", 7070);
 		client.connect();
 
 
