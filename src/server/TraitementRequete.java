@@ -16,11 +16,9 @@ public class TraitementRequete {
 	}
 
 	public String execute(String lecture){
-		System.out.println(lecture);
 		Map<String,Object> map = json.fromJson(lecture, new TypeToken<Map<String,Object>>() {}.getType()); 
 		RetourService reponse = null;
 		try {
-			System.out.println(map.get("service"));
 			Services s = (Services) new GsonBuilder().create().fromJson(map.get("parametres").toString(), Class.forName((String)map.get("service")));
 			reponse = s.execute();
 		} catch (JsonSyntaxException | ClassNotFoundException e) {

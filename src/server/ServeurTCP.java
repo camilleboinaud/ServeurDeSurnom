@@ -5,112 +5,57 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServeurTCP {
 	ServerSocket		soc			= null;
 	Socket				clientSoc	= null;
-	DataOutputStream	output;
-	DataInputStream		input;
-	BufferedReader		buffer;
 	
 	public ServeurTCP(int port) {
 		try {
-			soc = new ServerSocket(port);
-			/*clientSoc = soc.accept();
-			output = new DataOutputStream(clientSoc.getOutputStream());
-			input = new DataInputStream(clientSoc.getInputStream());*/
-
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
-	/**
-	 * Renvoyer le message reçu
-	 * @param lecture
-	 */
-	public String getMessageFromClient(){
-
-		buffer = new BufferedReader(new InputStreamReader(input));
-		String encours="";
-		try {
-			if((encours = this.buffer.readLine()) != null) return encours;
-				//lecture+="\nSUC-"+encours.substring(encours.indexOf("<#>")+3);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		return "";
-	}
-	/**
-	 * Permet d'envoyer un message au client via le printstream
-	 * @param tosend
-	 */
-	public void send(String tosend){
-		try {
-			System.out.println(tosend);
-			this.output.writeBytes(tosend+"\n");
-		}catch (IOException se){
-			System.out.println(se.getMessage());
-			this.disconnect();
-		}
-	}
-	/**
-	 * Fermer tous les streams et ports
-	 */
-	public void disconnect(){
-		try {
-			buffer.close();
-			input.close();
-			output.close();
-			clientSoc.close();
-			soc.close();
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-		
-	}
-	/**
-	 * Accepter un nouveau client
-	 * @return boolean (tout s'est passé ou pas)
-	 */
-	 private boolean accept() {
-		try {
-			clientSoc = soc.accept();
-			System.out.println("Client connecte");
-
-			output = new DataOutputStream(clientSoc.getOutputStream());
-			input = new DataInputStream(clientSoc.getInputStream());
-		}
-		catch (Exception e){return false;}
-
-		return true;
-	}
-	
-	public static void main(String args[]) {
-		ServeurTCP s = new ServeurTCP(7070);
-		TraitementRequete sc = new TraitementRequete();
-		String rec="";
-		boolean running=true;
-		while(running){
-			System.out.println("1er While");
-			s.accept();
+			soc = new ServerSocket(port);	
 			while(true){
-				System.out.println("2nd While");
-				rec = sc.execute(s.getMessageFromClient());
-				System.out.println(rec);
-				if(rec.indexOf("DECONNECTION")!=-1){
-					break;
-				}else{
-					s.send(rec);
-				}
-						
+					clientSoc = soc.accept();
+					ThreadClient t = new ThreadClient(clientSoc);
+					new Thread(t).start();
 			}
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
-			s.disconnect();
+		
 	}
 	
+	class ThreadClient implements Runnable{
+		Socket threadSocket;
+        
+        public ThreadClient (Socket socket) {
+            threadSocket = socket;
+        }
+         
+        public void run () {
+            try {
+                PrintWriter output = new PrintWriter(threadSocket.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(threadSocket.getInputStream()));              
+                TraitementRequete requete = new TraitementRequete();
+                while (true) {
+                    String in = input.readLine();
+                    if (in == null) break;
+                    String req = requete.execute(in)+"\n";
+                    if(req.indexOf("DECONNECTION")!=-1){
+    					break;
+    				} else{
+    					output.println(req);
+    				}
+                }
+            } catch(IOException exception) {
+                System.out.println("Error: " + exception);
+            }
+        }
 	}
+	
+	public static void main(String[] args){
+		new ServeurTCP(7070);
+	}
+}

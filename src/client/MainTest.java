@@ -12,7 +12,6 @@ public class MainTest {
 		ConstructionRequete requete;
 		
 		ClientTCP client = new ClientTCP("localhost", 7070);
-		//ClientTCP client = new ClientTCP("172.19.250.194", 2424);
 		//ClientUDP client = new ClientUDP("localhost", 7070);
 		client.connect();
 
@@ -21,12 +20,11 @@ public class MainTest {
 			requete = new ConstructionRequete();
 			String json = gson.toJson(requete);
 			client.send(json.toString());
-			System.out.println(json.toString());
+			if(json.indexOf(ServiceN.Deconnection.toString())!=-1) break;
 			String received = client.receive();
-			if(received.indexOf(ServiceN.Deconnection.toString())!=-1) break;
 			r.affichage(received);
 		} while (true);
-
+		System.out.println("Déconnection");
 		client.disconnect();
 
 	}
