@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 public class MainTest {
 	public static void main(String[] args) {
 		
-		GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
-
+		Gson gson = new GsonBuilder().create();
+		TraitementReponse r = new TraitementReponse();
+        
 		ConstructionRequete requete;
 		
 		ClientTCP client = new ClientTCP("localhost", 4040);
@@ -19,12 +19,10 @@ public class MainTest {
 		do {
 			requete = new ConstructionRequete();
 			String json = gson.toJson(requete);
-			System.out.println(json);
-			client.send(json);
-			if(requete.toString().indexOf(ServiceN.DECONNECTION.toString())!=-1) break;
-			System.out.println(client.receive());
-			//reponse = new TraitementReponse();
-			//reponse.affichage();
+			client.send(json.toString());
+			String received = client.receive();
+			if(received.indexOf(ServiceN.Deconnection.toString())!=-1) break;
+			r.affichage(received);
 		} while (true);
 
 		client.disconnect();

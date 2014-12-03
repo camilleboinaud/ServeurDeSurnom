@@ -1,19 +1,17 @@
 package client;
 public enum ServiceN {
-	REQ("REQ"),
-	DECONNECTION("DECONNECTION"),
-	AJOUTER_NOM("AJOUTER_NOM"),
-	AJOUTER_SURNOM("AJOUTER_SURNOM"),
-	SUPPRIMER_SURNOM("SUPPRIMER_SURNOM"),
-	SUPPRIMER_NOM("SUPPRIMER_NOM"),
-	LISTER_UN("LISTER_UN"),
-	LISTER_REQUETE("LISTER_REQUETE"),
-	LISTER_TOUT("LISTER_TOUT"),
-	MODIFIER_NOM("MODIFIER_NOM"),
-	MODIFIER_SURNOM("MODIFIER_SURNOM"),
-	MODIFIER_APOGEE("MODIFIER_APOGEE"),
-	MODIFIER_QUALITE("MODIFIER_QUALITE"),
-	MODIFIER_DEPARTEMENT("MODIFIER_DEPARTEMENT");
+	Deconnection("server.service.Deconnection"),
+	AjouterNom("server.service.AjouterNom"),
+	AjouterSurnom("server.service.AjouterSurnom"),
+	SupprimerSurnom("server.service.SupprimerSurnom"),
+	SupprimerNom("server.service.SupprimerNom"),
+	ListerUn("server.service.ListerUn"),
+	ListerRequete("server.service.ListerRequete"),
+	ListerTout("server.service.ListerTout"),
+	ModifierNom("server.service.ModifierNom"),
+	ModifierSurnom("server.service.ModifierSurnom"),
+	ModifierQualite("server.service.ModifierQualite"),
+	ModifierDepartement("server.service.ModifierDepartement");
 	
 	private String name;
 	

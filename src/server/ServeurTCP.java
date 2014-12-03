@@ -18,9 +18,9 @@ public class ServeurTCP {
 	public ServeurTCP(int port) {
 		try {
 			soc = new ServerSocket(port);
-			clientSoc = soc.accept();
+			/*clientSoc = soc.accept();
 			output = new DataOutputStream(clientSoc.getOutputStream());
-			input = new DataInputStream(clientSoc.getInputStream());
+			input = new DataInputStream(clientSoc.getInputStream());*/
 
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -32,21 +32,18 @@ public class ServeurTCP {
 	 * @param lecture
 	 */
 	public String getMessageFromClient(){
-		buffer = new BufferedReader(new InputStreamReader(input));
 
-		String lecture="";
+		buffer = new BufferedReader(new InputStreamReader(input));
 		String encours="";
 		try {
-			if((encours = this.buffer.readLine()) != null){
-				lecture+=encours;
+			if((encours = this.buffer.readLine()) != null) return encours;
 				//lecture+="\nSUC-"+encours.substring(encours.indexOf("<#>")+3);
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		
-		return lecture;
+		return "";
 	}
 	/**
 	 * Permet d'envoyer un message au client via le printstream
@@ -54,7 +51,8 @@ public class ServeurTCP {
 	 */
 	public void send(String tosend){
 		try {
-			this.output.writeBytes(tosend);
+			System.out.println(tosend);
+			this.output.writeBytes(tosend+"\n");
 		}catch (IOException se){
 			System.out.println(se.getMessage());
 			this.disconnect();
@@ -79,12 +77,13 @@ public class ServeurTCP {
 	 private boolean accept() {
 		try {
 			clientSoc = soc.accept();
+			System.out.println("Client connecte");
+
 			output = new DataOutputStream(clientSoc.getOutputStream());
 			input = new DataInputStream(clientSoc.getInputStream());
 		}
 		catch (Exception e){return false;}
 
-		System.out.println("Client connecté");
 		return true;
 	}
 	
@@ -98,7 +97,6 @@ public class ServeurTCP {
 			s.accept();
 			while(true){
 				System.out.println("2nd While");
-				System.out.println(s.getMessageFromClient());
 				rec = sc.execute(s.getMessageFromClient());
 				System.out.println(rec);
 				if(rec.indexOf("DECONNECTION")!=-1){

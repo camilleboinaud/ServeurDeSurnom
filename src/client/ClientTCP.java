@@ -45,7 +45,7 @@ public class ClientTCP {
 	public void send(String service){
 		if(mySocket!=null && os!=null && is!=null){
 			try{
-				os.writeBytes(service);
+				os.writeBytes(service+"\n");
 			}catch(IOException e){
 				System.err.println("Impossible to reach I/O from host : "+ipServer);
 				System.err.println(e.getMessage());
@@ -58,14 +58,14 @@ public class ClientTCP {
 
 		if(mySocket!=null && os!=null && is!=null){
 			try{
-				bf = new BufferedReader(new InputStreamReader(is));
-				if((tmp = bf.readLine())!=null) return tmp;		
+				bf = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+				if((tmp = bf.readLine())!=null)	return tmp;
 			}catch(IOException e){
 				System.err.println("Impossible to reach I/O from host : "+ipServer);
 				System.err.println(e.getMessage());
 			}
 		}
-		return null;
+		return "";
 	}
 	
 	

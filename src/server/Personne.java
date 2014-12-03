@@ -53,5 +53,16 @@ public class Personne {
 	public void setSurnoms(ArrayList<String> surnoms) {
 		this.surnoms = surnoms;
 	}
+	
+	public String toString(){
+		String qualites = (qualite.indexOf("ETUD")!=-1)?"Etudiant(e) "+qualite.substring(qualite.length()-1)+"A":"Enseignant(e)";
+		String result = "# "+nom+" ["+apogee+"] : "+qualites+" - Departement "+departement+" - Surnoms {";
+		String sep = ", ";
+
+		for(String surn : surnoms){
+			result += surn+sep;
+		}
+		return ((result.substring(result.length()-sep.length()).equals(sep))?result.substring(0,result.length()-sep.length()):result)+"}@";
+	}
 
 }

@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class ConstructionRequete {
 	
 	private Map<String,String> parametres = null;
-	private ServiceN service = null;
+	private String service = "";
 
 	
 	public ConstructionRequete(){
@@ -69,7 +69,7 @@ public class ConstructionRequete {
 		String answer = "";
 		Scanner sc = new Scanner(System.in);
 		do{
-			System.out.println("Saisissez le numéro Apogée de la personne : ");
+			System.out.println("Saisissez le numero Apogee de la personne : ");
 			answer = sc.nextLine();
 		} while(answer.length() != 8);
 	
@@ -80,13 +80,13 @@ public class ConstructionRequete {
 		String answer = "";
 		Scanner sc = new Scanner(System.in);
 		do{
-			System.out.println("Saisissez le statut de la personne (ETUD pour un étudiant, PROF pour un professeur) : ");
+			System.out.println("Saisissez le statut de la personne (ETUD pour un etudiant, PROF pour un professeur) : ");
 			answer = sc.nextLine();
 		} while(!answer.matches("ETUD|PROF"));
 		if(answer.equals("ETUD")){
 			String annee = "";
 			do{
-				System.out.println("Saisissez le numéro d'année de la personne (1 à 5) : ");
+				System.out.println("Saisissez le numero d'annee de la personne (1 à 5) : ");
 				annee = sc.nextLine();
 			} while(!annee.matches("1|2|3|4|5"));
 			answer = answer.concat(annee);
@@ -99,7 +99,7 @@ public class ConstructionRequete {
 		String answer = "";
 		Scanner sc = new Scanner(System.in);
 		do{
-			System.out.println("Saisissez le département où travaille la personne : ");
+			System.out.println("Saisissez le departement où travaille la personne : ");
 			answer = sc.nextLine();
 		} while(!answer.matches("SI|MAM|ELEC|GE|BAT|GB|ELECII|PEIP"));
 	
@@ -112,77 +112,77 @@ public class ConstructionRequete {
 		String choice = "";
 		Scanner scInt = new Scanner(System.in);
 		do{
-		System.out.println("Entrez le numéro du service que vous souhaitez effectuer : ");
-		System.out.println("\t1.  "+ServiceN.AJOUTER_NOM+"\t\t2.  "+ServiceN.AJOUTER_SURNOM+"\t\t3.  "+ServiceN.LISTER_REQUETE+"\t\t4.  "+ServiceN.LISTER_TOUT+"\n" +
-				"\t5.  "+ServiceN.LISTER_UN+"\t\t6.  "+ServiceN.MODIFIER_DEPARTEMENT+"\t7.  "+ServiceN.MODIFIER_NOM+"\t\t8.  "+ServiceN.MODIFIER_QUALITE+"\n"+
-				"\t9. "+ServiceN.MODIFIER_SURNOM+"\t10. "+ServiceN.SUPPRIMER_NOM+"\t\t11. "+ServiceN.SUPPRIMER_SURNOM+"\t\t12. "+ServiceN.DECONNECTION);
+		System.out.println("Entrez le numero du service que vous souhaitez effectuer : ");
+		System.out.println("\t1.  AjouterNom\t\t2.  AjouterSurnom\t\t3.  ListerRequete\t\t4.  ListerTout\n" +
+				"\t5.  ListerUn\t\t6.  ModifierDepartement\t\t7.  ModifierNom\t\t\t8.  ModifierQualite\n"+
+				"\t9. ModifierSurnom\t10. SupprimerNom\t\t11. SupprimerSurnom\t\t12. Deconnection");
 		choice = scInt.nextLine();
 		} while(!choice.matches("1|2|3|4|5|6|7|8|9|10|11|12|13"));
 		
 		switch(Integer.parseInt(choice)){
 		case 1 :
-			service = ServiceN.AJOUTER_NOM;
+			service = ServiceN.AjouterNom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("qualite",this.askQualite());
 			s.put("departement",this.askDepartement());
 			break;
 		case 2 :
-			service = ServiceN.AJOUTER_SURNOM;
+			service = ServiceN.AjouterSurnom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("surnom",this.askSurnom());
 			break;
 		case 3 :
-			service = ServiceN.LISTER_REQUETE;
+			service = ServiceN.ListerRequete.toString();
 			s.put("filtre",this.askFiltreRecherche());
 			break;
 		case 4 :
-			service = ServiceN.LISTER_TOUT;
+			service = ServiceN.ListerTout.toString();
 			break;
 		case 5 :
-			service = ServiceN.LISTER_UN;
+			service = ServiceN.ListerUn.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			break;
 		case 6 :
-			service = ServiceN.MODIFIER_DEPARTEMENT;
+			service = ServiceN.ModifierDepartement.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("departement",this.askDepartement());
 			break;
 		case 7 :
-			service = ServiceN.MODIFIER_NOM;
+			service = ServiceN.ModifierNom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("nouveauNom",this.askNouveauNom());
 			break;
 		case 8 :
-			service = ServiceN.MODIFIER_QUALITE;
+			service = ServiceN.ModifierQualite.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("qualite",this.askQualite());
 			break;
 		case 9 :
-			service = ServiceN.MODIFIER_SURNOM;
+			service = ServiceN.ModifierSurnom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("surnom",this.askSurnom());
 			s.put("nouveauSurnom",this.askNouveauSurnom());
 			break;
 		case 10 :
-			service = ServiceN.SUPPRIMER_NOM;
+			service = ServiceN.SupprimerNom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			break;
 		case 11 :
-			service = ServiceN.SUPPRIMER_SURNOM;
+			service = ServiceN.SupprimerSurnom.toString();
 			s.put("nom",this.askNom());
 			s.put("apogee",this.askApogee());
 			s.put("surnom",this.askSurnom());
 			break;
 		case 12 :
-			service = ServiceN.DECONNECTION;
+			service = ServiceN.Deconnection.toString();
 			break;
 		}
 		
@@ -190,7 +190,7 @@ public class ConstructionRequete {
 		return s;
 	}
 	
-	public ServiceN getService(){
+	public String getService(){
 		return this.service;
 	}
 	
