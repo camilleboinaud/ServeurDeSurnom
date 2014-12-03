@@ -73,7 +73,10 @@ public class ServeurTCP {
 		}
 		
 	}
-	
+	/**
+	 * Accepter un nouveau client
+	 * @return boolean (tout s'est passé ou pas)
+	 */
 	 private boolean accept() {
 		try {
 			clientSoc = soc.accept();
@@ -88,7 +91,7 @@ public class ServeurTCP {
 	}
 	
 	public static void main(String args[]) {
-		ServeurTCP s = new ServeurTCP(4040);
+		ServeurTCP s = new ServeurTCP(7070);
 		TraitementRequete sc = new TraitementRequete();
 		String rec="";
 		boolean running=true;

@@ -6,50 +6,64 @@ import java.net.*;
 import server.ServeurUDP;
 
 public class ClientUDP {
-	int			port;
-	InetAddress	serveur;
-	DatagramPacket datapacketsend;
-	DatagramSocket socket;
-	DatagramPacket datapacketRecieved;
-	int length;
+	int				port;
+	InetAddress		serveur;
+	DatagramPacket	datapacketsend;
+	DatagramSocket	socket;
+	DatagramPacket	datapacketRecieved;
+	int				length;
+	String			host;
+	byte[]			bufferoutput;
 
-	public ClientUDP(int port) {
+	public ClientUDP(String host, int port) {
 		this.port = port;
 		datapacketsend = null;
-		this.length=1024;
+		this.length = 1024;
+		bufferoutput = new byte[1024];
+
+	}
+
+	public void connect() {
 		try {
-			serveur = InetAddress.getByName("localhost");
-		} catch (UnknownHostException e) {
+			serveur = InetAddress.getByName(host);
+			socket = new DatagramSocket();
+		} catch (UnknownHostException | SocketException e) {
 			System.out.println("Erreur constructeur clientudp "
 					+ e.getMessage());
 		}
 	}
 
-	public void execute() {
-		
-		byte buffer[] = new byte[1024];
-		buffer = ("test").getBytes();
-		this.datapacketsend = new DatagramPacket(buffer, buffer.length, serveur,
-				this.port);
+	public void send(String tosend) {
+		this.datapacketsend = new DatagramPacket(bufferoutput,
+				bufferoutput.length, serveur, this.port);
 		try {
-			socket = new DatagramSocket();
 			socket.send(this.datapacketsend);
-			datapacketRecieved = new DatagramPacket(new byte[length],
-					length);
-			socket.receive(datapacketRecieved);
-			
 		} catch (IOException e) {
 			System.out.println(""+e.getMessage());
 		}
-		
-		System.out.println("Data recieved : "
-				+ new String(datapacketRecieved.getData()));
-		System.out.println("From : " + datapacketRecieved.getAddress() + ":"
-				+ datapacketRecieved.getPort());
 	}
 
-	public static void main(String args[]) {
-		ClientUDP cudp = new ClientUDP(4040);
-		cudp.execute();
+	public String receive() {
+		String rec;
+		datapacketRecieved = new DatagramPacket(new byte[length], length);
+		try {
+			socket.receive(datapacketRecieved);
+		} catch (IOException e) {
+			System.out.println(""+e.getMessage());
+		}
+		rec = new String(datapacketRecieved.getData());
+		System.out.println("Data recieved : "
+				+rec );
+		System.out.println("From : " + datapacketRecieved.getAddress() + ":"
+				+ datapacketRecieved.getPort());
+		return rec;
 	}
+	public void disconnect(){
+		socket.close();
+	}
+
+	/*
+	 * public static void main(String args[]) { ClientUDP cudp = new
+	 * ClientUDP("localhost", 6060); cudp.connect(); cudp.execute(); }
+	 */
 }
