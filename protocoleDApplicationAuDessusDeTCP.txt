@@ -1,0 +1,347 @@
+/***************************************
+ *****   PROTOCOLE D'APPLICATION   *****
+ *****      AU DESSUS DE TCP       *****
+ ***************************************/
+
+/***** PORT UTILISE *****/
+	
+	-> Port : 6565
+
+
+/***** LISTE DES SERVICES *****/
+
+	-> Ajouter un nouveau nom
+	-> Ajouter une nouvelle association nom/surnom (qui appellera (ajouter un nom) si nécessaire)
+	-> Afficher les surnoms d’une personne
+	-> Lister toutes les entrées
+	-> Supprimer un surnom
+	-> Supprimer un nom et tout ses surnoms
+	-> Afficher seulement les étudiants  / profs , 4A etc.
+	-> Modifier un surnom précis d’une personne
+	-> Modifier un nom précis d’une personne
+	-> Quitter
+	-> Connecter
+
+
+
+/***** SERIALISATION *****/
+
+	-> Les données sont sérialisées sous format JSON.
+
+
+/***** CARACTERES RESERVES *****/
+
+	-> <#> utilisé comme séparateur général
+	-> <#>\n utilisé comme marqueur de fin de ligne et de fin de requête ou de réponse
+	-> <;> séparateur entre deux éléments quand la réponse retourne une liste
+	-> <:> séparateur entre l'identité et les surnoms quand la réponse retourne une liste
+	-> </> séparateur entre les différentes données constituant l'identité quand la réponse retourne une liste
+	-> <,> séparateur entre deux surnoms quand la réponse retourne une liste
+
+
+/***** EXPRESSIONS RATIONNELLES DES MESSAGES SERIALISES ENVOYES *****/
+
+	-> _REQUETE_ : {"service" : _SERVICE_, "parametres" : _PARAMETRES_ }
+
+	-> _SERVICE_ : server.service.Deconnection | server.service.AjouterNom | server.service.AjouterSurnom | server.service.SupprimerSurnom 
+			| server.service.SupprimerNom | server.service.ListerUn | server.service.ListerRequete | server.service.ListerTout 
+			| server.service.ModifierNom | server.service.ModifierSurnom | server.service.ModifierQualite | server.service.ModifierDepartement
+
+	-> _PARAMETRES_ : { "nom" : _TEXT_, "apogee" : _INT_, "qualite" : _QUALITE_, "departement" : _DEPARTEMENT_, "surnom" : _TEXT_, "nouveauNom" : _TEXT_,
+				"nouveauSurnom" : _TEXT_ , "filtre" : _TEXT_}  /* Tous les paramètres ne sont pas obligatoires, cf DETAIL DES INSTRUCTIONS */
+
+
+	-> _QUALITE_ : ETUD_ANNEE_ | PROF
+
+	-> _ANNEE_ : 1|2|3|4|5
+
+	-> _TEXT_ : chaine de caractère
+
+	-> _INT_ : entier à 8 chiffres
+
+	-> _DEPARTEMENT_ : SI|MAM|ELEC|GE|BAT|GB|ELECII|PEIP
+
+/***** EXPRESSIONS RATIONNELLES DES MESSAGES SERIALISES RECUS *****/
+
+	-> REPONSE : {"statut" : _STATUT_,  "service" : _SERVICE_, "message" : _TEXT_, "reponse" : _REPONSE_ }
+
+	-> _STATUT_ : ERREUR_FIN_REQUETE|SYNTAXE_APOGEE|NOM_EXISTE_DEJA|SYNTAXE_QUALITE|DEPARTEMENT_INCONNU|NOM_INCONNU|SURNOM_INCONNU|
+			|FILTRE_INCONNU|SERVICE_INCONNU|SUCCESS|DECONNECTION /* Spécification ci-dessous pour chaque service */
+
+	-> _SERVICE_ : server.service.Deconnection | server.service.AjouterNom | server.service.AjouterSurnom | server.service.SupprimerSurnom 
+			| server.service.SupprimerNom | server.service.ListerUn | server.service.ListerRequete | server.service.ListerTout 
+			| server.service.ModifierNom | server.service.ModifierSurnom | server.service.ModifierQualite | server.service.ModifierDepartement
+
+	-> _TEXT_ : chaine de caractère
+
+	-> _REPONSE_ : {_PERSONNES_}  /* Tous les paramètres ne sont pas obligatoires, cf DETAIL DES INSTRUCTIONS */
+
+	-> _PERSONNES_ : _PERSONNE_ | _PERSONNE_@_PERSONNES_
+
+	-> _PERSONNE_ : # _PRENOM_ [_APOGEE_] : _QUALITE_ - Departement _DEPARTEMENT_ - Surnoms {_SURNOMS_}
+
+	-> _PRENOM_ : _TEXT_	
+
+	-> _QUALITE_ : Etudian(e) _ANNEE_ | Enseignant(e)
+
+	-> _ANNEE_ : 1|2|3|4|5
+
+	-> _APOGEE_ : entier à 8 chiffres
+
+	-> _DEPARTEMENT_ : SI|MAM|ELEC|GE|BAT|GB|ELECII|PEIP
+
+	-> _SURNOMS_ : _TEXT_ | _TEXT_, _SURNOMS_ | ""
+
+
+
+
+/***** ERREURS GENERALES *****/
+
+	-> "ERREUR_FIN_REQUETE"
+	   Le serveur n'a pas pu détecter la fin de la requête : "<#>\n". L'intégrité de celle-ci est
+	   donc remise en cause.
+
+
+
+/***** DETAIL DES INSTRUCTIONS *****/
+
+	-> AjouterNom :
+
+		SERVICE : AjouterNom
+		
+		PARAMETRES : 
+			- String::nom		/* Nom à ajouter */
+			- String::apogee	/* Numéro apogée de la personne à ajouter */
+			- String::qualite	/* ETUD suvi du numéro d'année pour un étudiant. 
+						   PROF pour un professeur. EX : ETUD4 ou PROF */
+			- String::departement	/* SI, MAM, ELEC, GE, BAT, GB, ELECII ou PEIP */
+
+		FONCTION :  
+			Permets la création d'un nouveau nom dans la base de surnoms. Le nom alors 
+			créé n'a pas de surnom associé.
+
+		PRECONDITION :
+			Aucun couple Nom/Apogee identiques ne doit être déjà enregistré.
+
+		RETOURS ERREURS POSSIBLES:
+
+			- SYNTAXE_APOGEE
+			  Le numéro apogée saisie ne respecte pas le format correct.
+			- NOM_EXISTE_DEJA
+			  Le nom/apogee existe déjà, on retourne le nom en question présent dans la
+			  base de donnée.
+			- SYNTAXE_QUALITE
+			  La qualité saisie ne respecte pas le format correct.
+			- DEPARTEMENT_INCONNU
+			  Le département saisi n'est pas correct.
+
+	
+	-> AjouterSurnom :
+
+		SERVICE : AjouterSurnom
+		
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom à ajouter */
+			- String::apogee	/* Numéro apogée de la personne à ajouter */
+			- String::surnom	/* Surnom à enregistrer */
+
+		FONCTION :  
+			Permets l'ajout d'un nouveau surnom associé à un nom et numéro apogée dans 
+			la base de surnoms.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOUR : 
+			- NOM_INCONNU
+			  Aucun couple Nom/Apogee ne correspond dans la base de données. On retourne
+			  uniquement le message d'erreur.
+
+	-> SupprimerSurnom : 
+
+		SERVICE : SupprimerSurnom
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom */
+			- String::apogee	/* Numéro apogée de la personne à ajouter */
+			- String::surnom	/* Surnom à supprimer */
+
+		FONCTION :  
+			Permets la suppression d'un surnom précédemment enregistré dans la base de
+			données.
+
+		PRECONDITION :
+			Le couple Nom/Apogee et le surnom doivent exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+
+			- NOM_INCONNU
+			  Aucun couple Nom/Apogee doit ne correspond dans la base de données. On
+			  retourne uniquement le message d'erreur.
+			- SURNOM_INCONNU
+			  Aucun surnom ne correspond pour ce nom dans la base de données. On retourne
+			  les données concernant le nom concerné avec la liste de ses surnoms.
+
+	
+	-> SupprimerNom :
+
+		SERVICE : SupprimerNom 
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom à supprimer */
+			- String::apogee	/* Numéro apogée de la personne à ajouter */
+
+		FONCTION :  
+			Permets la suppression d'un nom de la base de donnée. Toutes les 
+			informations le concernant seront radiés.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+
+			- NOM_INCONNU
+			  Aucun couple Nom/Apogee doit ne correspond dans la base de données. On
+			  retourne uniquement le message d'erreur.
+
+
+	-> ListerUn :
+
+		SERVICE : ListerUn
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom à lister */
+			- String::apogee	/* Numéro apogée de la personne à ajouter */
+
+		FONCTION :  
+			Permets de lister tous les surnoms associés à un nom de la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+ 
+			- NOM_INCONNU
+			  Aucun couple Nom/Apogee doit ne correspond dans la base de données. On
+			  retourne uniquement le message d'erreur.
+ 
+ 
+	-> ListerRequete : 
+
+		SERVICE : ListerRequete
+
+		LISTE DES PARAMETRES : 
+			- String::filtre	/* Filtre utilisé pour trier certains éléments :
+						   DEPARTEMENT, ANNEE, QUALITE, SURNOM */
+
+		FONCTION :  
+			Permets de lister tous les noms (avec leurs surnoms) remplissant les 
+			conditions du filtre dans la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+
+			- FILTRE_INCONNU
+			  Le filtre utilisé est inconnu. On retourne uniquement le message d'erreur.
+ 
+
+	-> ListerTout :
+
+		SERVICE : ListerTout
+
+		LISTE DES PARAMETRES :
+			Aucun paramètre
+
+		FONCTION :  
+			Permets de lister tous les noms (avec leurs surnoms) de la base de donnée.
+
+		PRECONDITION :
+			Aucune.
+
+
+	-> ModifierNom : 
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom à modifier */
+			- String::apogee	/* Numéro apogée de la personne à modifier */
+			- String::nouveauNom	/* Nom modifié */
+
+		FONCTION :  
+			Permets de modifier un nom dans la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+ 
+			- NOM_INCONNU
+			  Le couple Nom/Apogee utilisé est inconnu. On retourne uniquement le 
+			  message d'erreur.
+
+	-> ModifierSurnom :
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom */
+			- String::apogee	/* Numéro apogée de la personne à modifier */
+			- String::surnom	/* Surnom à modifier */
+			- String::nouveauSurnom	/* Surnom modifié */
+
+		FONCTION :  
+			Permets de modifier un surnom dans la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+ 
+			- NOM_INCONNU
+			  Le couple Nom/Apogee utilisé est inconnu. On retourne uniquement le 
+			  message d'erreur.
+
+
+	-> ModifierQualite :
+
+		LISTE DES PARAMETRES : 
+			- String::nom		/* Nom */
+			- String::apogee	/* Numéro apogée de la personne à modifier */
+			- String::qualite	/* Qualité modifiée */
+
+		FONCTION :  
+			Permets de modifier la qualité d'une personne dans la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+ 
+			- NOM_INCONNU
+			  Le couple Nom/Apogee utilisé est inconnu. On retourne uniquement le 
+			  message d'erreur.
+			- SYNTAXE_QUALITE
+			  La qualité saisie ne respecte pas le format correct.
+
+
+	-> ModifierDepartement :
+
+		LISTE DES PARAMETRES : 
+			- String::nom			/* Nom */
+			- String::apogee		/* Numéro apogée de la personne à modifier */
+			- String::departement	/* Département modifié */
+
+		FONCTION :  
+			Permets de modifier le département d'une personne dans la base de donnée.
+
+		PRECONDITION :
+			Le couple Nom/Apogee doit exister dans la base de données.
+
+		RETOURS ERREURS POSSIBLES:
+ 
+			- NOM_INCONNU
+			  Le couple Nom/Apogee utilisé est inconnu. On retourne uniquement le 
+			  message d'erreur.
+			- DEPARTEMENT_INCONNU
+			  Le département saisi n'est pas correct.
+
+

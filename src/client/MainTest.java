@@ -21,6 +21,7 @@ public class MainTest {
 			requete = new ConstructionRequete();
 			String json = gson.toJson(requete);
 			client.send(json.toString());
+			System.out.println(json.toString());
 			String received = client.receive();
 			if(received.indexOf(ServiceN.Deconnection.toString())!=-1) break;
 			r.affichage(received);
